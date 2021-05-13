@@ -1,3 +1,79 @@
+<?php
+
+  require_once("config.php");
+
+  session_start();
+
+/*  if ( isset($_COOKIE["user"]) && $_COOKIE["user"] == "employee" ) {
+    header("location:doctor_home.php");
+  }else if ( isset($_COOKIE["user"]) && $_COOKIE["user"] == "patient" ) {
+    header("location:patient_home.php");
+  }
+*/
+
+  try {
+
+    $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+      if ( isset($_POST['btnPat']) && isset($_POST["TC"]) && isset($_POST["password"]) ) {
+
+          $tc = $_POST["TC"];
+          $password = $_POST["password"];
+
+          $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM patient) AND password=?");
+
+          echo "Username: " . $tc . " Password: " . $password ;
+
+          $query->execute(
+            array(
+               $tc, $password
+             )
+          );
+
+          echo "Row Count: " . $query->rowCount();
+
+          if ( $query->rowCount() > 0 ){
+              $_SESSION["TC"] = $tc;
+              $_SESSION["password"] = $password;
+              header("location:patient_home.php");
+          }else {
+            echo "YANLISSSS PAT";
+          }
+
+      } else if( isset($_POST['btnEmp']) && isset($_POST["TC"]) && isset($_POST["password"]) ) {
+
+          $tc = $_POST["TC"];
+          $password = $_POST["password"];
+
+          $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM employee) AND password=?");
+
+          echo "Username: " . $tc . " Password: " . $password ;
+
+          $query->execute(
+            array(
+               $tc, $password
+             )
+          );
+
+          if ( $query->rowCount() > 0 ){
+              $_SESSION["TC"] = $tc;
+              $_SESSION["sid"] = $password;
+              header("location:doctor_home.php");
+          }else {
+            echo "YANLISSSS EMP";
+          }
+
+      }
+
+    }
+
+  } catch (PDOException $err) {
+    echo "<h1>Cant Connect Database!</h1>";
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -29,35 +105,31 @@
           <div class="row text-center">
 
             <div class="col-12 text-left">
-              <form>
+              <form action="index.php" method="POST">
                 <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                </div>
+                  <label class="form-label">TC</label>
+                  <input type="text" class="form-control" name="TC" aria-describedby="emailHelp">
+                  <div class="form-text">We'll never share your information with anyone else.</div>
+                </div> <br>
                 <div class="mb-3">
                   <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
+                  <input type="password" class="form-control" name="password">
                 </div>
-              </form>
+
+
+            </div>
+
+            <div class="col-12 my-3">
+                <button class="btn btn-danger p-3" type="submit" name="btnPat">LOGIN AS PATIENT</button>
             </div>
 
             <div class="col-12 mb-3">
-              <form class="d-flex justify-content-center">
-                <button class="btn btn-danger p-3" type="submit">LOGIN AS PATIENT</button>
-              </form>
-            </div>
-
-            <div class="col-12 mb-3">
-              <form class="d-flex justify-content-center">
-                <button class="btn btn-danger p-3" type="submit">LOGIN AS DOCTOR</button>
+                <button class="btn btn-danger p-3" type="submit" name="btnEmp">LOGIN AS EMPLOYEE</button>
               </form>
             </div>
 
             <div class="col-12">
-              <form class="d-flex justify-content-center">
                 <a href="register_patient.php" class="btn btn-danger p-3">REGISTER PATIENT</a>
-              </form>
             </div>
 
           </div>

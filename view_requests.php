@@ -24,7 +24,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome Laboratorian Ahmet Duru</a>
             <form class="d-flex">
-              <button class="btn btn-danger" type="submit">Logout</button>
+              <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
           </div>
         </nav>
