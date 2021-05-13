@@ -71,10 +71,23 @@
                   </div>
                 </div>
                 <div class="col-md-6">
+                  <label for="validationCustom05" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="validationCustom05" required>
+                  <div class="invalid-feedback">
+                    Please provide a password.
+                  </div>
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
+                </div>
+                <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Phone Number</label>
                   <input type="text" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a phone number.
+                  </div>
+                  <div class="valid-feedback">
+                    Looks good!
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -82,6 +95,9 @@
                   <input type="text" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a birtdate.
+                  </div>
+                  <div class="valid-feedback">
+                    Looks good!
                   </div>
                 </div>
                 <div class="col-md-6">
@@ -94,6 +110,9 @@
                   <div class="invalid-feedback">
                     Please select a gender.
                   </div>
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Height</label>
@@ -101,12 +120,18 @@
                   <div class="invalid-feedback">
                     Please provide a height.
                   </div>
+                  <div class="valid-feedback">
+                    Looks good!
+                  </div>
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Weight</label>
                   <input type="text" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a weight.
+                  </div>
+                  <div class="valid-feedback">
+                    Looks good!
                   </div>
                 </div>
                 <div class="col-12">
@@ -118,6 +143,9 @@
                     <div class="invalid-feedback">
                       You must agree before submitting.
                     </div>
+                    <div class="valid-feedback">
+                      Looks good!
+                    </div>
                   </div>
                 </div>
                 <div class="col-12 mt-5">
@@ -125,11 +153,13 @@
                 </div>
               </form>
             </div>
-
-
-
-
           </div>
+        </div>
+
+        <div class="col-12 mt-3">
+          <form class="d-flex justify-content-center">
+            <a href="index.php" class="btn btn-danger px-4">Return</a>
+          </form>
         </div>
 
       </div>

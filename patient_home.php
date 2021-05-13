@@ -18,45 +18,37 @@
 
     <div class="container-fluid p-0">
 
-      <!-- Prescribe Patient -->
+      <!-- HEADER -->
+      <div class="row">
+        <nav class="navbar navbar-light header px-0">
+          <div class="container-fluid">
+            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
+            <form class="d-flex">
+              <button class="btn btn-danger" type="submit">Logout</button>
+            </form>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Actions -->
       <div class="row mt-5">
 
-        <div class="m-4 text-center">
+        <div class="my-4 text-center">
           <h2 class="h2">HOSPITAL DATA MANAGEMENT SYSTEM</h2>
         </div>
 
-        <div class="col-12 col-md-5 mx-auto bg-form p-5 rounded">
+        <div class="col-12 col-md-4 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
 
-            <div class="col-12 text-left">
-              <form>
-                <div class="mb-3">
-                  <label for="exampleInputEmail1" class="form-label">Email address</label>
-                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                </div>
-                <div class="mb-3">
-                  <label for="exampleInputPassword1" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1">
-                </div>
+            <div class="col-12 mb-3">
+              <form class="d-flex justify-content-center">
+                <a href="#" class="btn btn-danger p-3 w-100">View Appointments</a>
               </form>
             </div>
 
             <div class="col-12 mb-3">
               <form class="d-flex justify-content-center">
-                <button class="btn btn-danger p-3" type="submit">LOGIN AS PATIENT</button>
-              </form>
-            </div>
-
-            <div class="col-12 mb-3">
-              <form class="d-flex justify-content-center">
-                <button class="btn btn-danger p-3" type="submit">LOGIN AS DOCTOR</button>
-              </form>
-            </div>
-
-            <div class="col-12">
-              <form class="d-flex justify-content-center">
-                <a href="register_patient.php" class="btn btn-danger p-3">REGISTER PATIENT</a>
+                <a href="#" class="btn btn-danger p-3 w-100">Book Appointment</a>
               </form>
             </div>
 
