@@ -37,11 +37,14 @@
           <h2 class="h2">TEST RESULT HISTORY</h2>
         </div>
 
-        <div class="col-12 col-md-8 mx-auto mb-4">
-          <div class="row">
-            <div class="col-12 col-md-4 mb-3 text-center">
+        <div class="col-12 col-md-6 mx-auto bg-form p-5 rounded">
+
+          <div class="row mb-3">
+            <div class="col-6 text-right">
+              <p class="d-inline" style="font-size:1.3rem;"><b>Patient: </b></p>
+            </div>
+            <div class="col-6">
               <div class="dropdown">
-                <p class="d-inline" style="font-size:1.3rem;"><b>Month: </b></p>
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                   February
                 </button>
@@ -52,9 +55,14 @@
                 </ul>
               </div>
             </div>
-            <div class="col-12 col-md-4 mb-3 text-center">
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6 text-right">
+              <p class="d-inline" style="font-size:1.3rem;"><b>Test Type: </b></p>
+            </div>
+            <div class="col-6">
               <div class="dropdown">
-                <p class="d-inline" style="font-size:1.3rem;"><b>Department: </b></p>
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                   February
                 </button>
@@ -65,71 +73,54 @@
                 </ul>
               </div>
             </div>
-            <div class="col-12 col-md-4">
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-6 text-right">
+              <p class="d-inline" style="font-size:1.3rem;"><b>Components: </b></p>
+            </div>
+            <div class="col-6">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  February
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  <li><a class="dropdown-item" href="#">March</a></li>
+                  <li><a class="dropdown-item" href="#">May</a></li>
+                  <li><a class="dropdown-item" href="#">June</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="row text-center">
+
+            <div class="col-12">
               <form class="d-flex justify-content-center">
-                <button class="btn btn-danger" type="submit">Search</button>
+                <button class="btn btn-success px-3" type="submit">Add Component</button>
               </form>
             </div>
-          </div>
-        </div>
 
-        <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
-          <div class="row text-center">
-            <div class="col-12">
-              <table class="table table-sm table-striped table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Patient Name</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Hakan Kara</td>
-                    <td>Seda</td>
-                    <td><a href="#">View</a></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Hakan Kara</td>
-                    <td>Seda</td>
-                    <td><a href="#">View</a></td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Hakan Kara</td>
-                    <td>Seda</td>
-                    <td><a href="#">View</a></td>
-                  </tr>
-                </tbody>
-              </table>
+            <div class="col-12 text-center mt-3">
+                <h3 class="h3">Requested Components</h3>
+                <p>Magnesium, Magnesium, Magnesium, Magnesium</p>
             </div>
+
+            <div class="col-12">
+              <form class="d-flex justify-content-center">
+                <button class="btn btn-success px-3" type="submit">Submit</button>
+              </form>
+            </div>
+
           </div>
+
         </div>
 
-        <div class="col-12">
-          <div class="mx-auto px-100 my-3">
-            <nav aria-label="...">
-              <ul class="pagination">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+        <div class="col-12 mt-3">
+          <form class="d-flex justify-content-center">
+            <button class="btn btn-danger px-3" type="submit">Return</button>
+          </form>
         </div>
-
 
       </div>
 

@@ -22,7 +22,7 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome Laboratorian Ahmet Duru</a>
             <form class="d-flex">
               <button class="btn btn-danger" type="submit">Logout</button>
             </form>
@@ -34,7 +34,7 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2">TEST RESULT HISTORY</h2>
+          <h2 class="h2">TEST REQUESTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -43,11 +43,10 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
+                  <th scope="col">Doctor Name</th>
                   <th scope="col">Patient Name</th>
-                  <th scope="col">Laboratorian Name</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Time</th>
-                  <th scope="col">Action</th>
+                  <th scope="col">Test Type</th>
+                  <th scope="col">Add Result</th>
                 </tr>
               </thead>
               <tbody>
@@ -56,24 +55,21 @@
                   <td>Hakan Kara</td>
                   <td>Seda</td>
                   <td>@mdo</td>
-                  <td>Mark</td>
-                  <td><a href="#">View</a></td>
+                  <td><a href="#">Add</a></td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
                   <td>Hakan Kara</td>
                   <td>Seda</td>
                   <td>@fat</td>
-                  <td>Mark</td>
-                  <td><a href="#">View</a></td>
+                  <td><a href="#">Add</a></td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
                   <td>Hakan Kara</td>
                   <td>Seda</td>
-                  <td>@fat</td>
                   <td>Mark</td>
-                  <td><a href="#">View</a></td>
+                  <td><a href="#">Add</a></td>
                 </tr>
               </tbody>
             </table>

@@ -34,7 +34,7 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2">TEST RESULT HISTORY</h2>
+          <h2 class="h2 mb-3">PATIENT APPOINTMENT HISTORY</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -44,10 +44,10 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Patient Name</th>
-                  <th scope="col">Laboratorian Name</th>
+                  <th scope="col">Doctor Name</th>
                   <th scope="col">Date</th>
                   <th scope="col">Time</th>
-                  <th scope="col">Action</th>
+                  <th scope="col">Symptomps and Diseases</th>
                 </tr>
               </thead>
               <tbody>
@@ -100,6 +100,9 @@
           </div>
         </div>
 
+        <div class="col-12 text-center mt-3">
+          <button type="submit" class="btn btn-danger p-2">Return</button>
+        </div>
 
       </div>
 

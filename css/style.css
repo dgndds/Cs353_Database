@@ -10,3 +10,6 @@
 .px-100{
   width: 250px;
 }
+.text-right{
+  text-align: right !important;
+}
