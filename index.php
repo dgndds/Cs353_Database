@@ -4,12 +4,12 @@
 
   session_start();
 
-/*  if ( isset($_COOKIE["user"]) && $_COOKIE["user"] == "employee" ) {
+  if ( isset($_COOKIE["TC"]) && $_COOKIE["type"] == "employee" ) {
     header("location:doctor_home.php");
-  }else if ( isset($_COOKIE["user"]) && $_COOKIE["user"] == "patient" ) {
+  }else if ( isset($_COOKIE["TC"]) && $_COOKIE["type"] == "patient" ) {
     header("location:patient_home.php");
   }
-*/
+
 
   try {
 
@@ -33,6 +33,7 @@
           if ( $query->rowCount() > 0 ){
               $_SESSION["TC"] = $tc;
               $_SESSION["password"] = $password;
+              $_SESSION["type"] = "patient";
               header("location:patient_home.php");
           }else {
             $incorrect_login = True;
@@ -54,6 +55,7 @@
           if ( $query->rowCount() > 0 ){
               $_SESSION["TC"] = $tc;
               $_SESSION["sid"] = $password;
+              $_SESSION["type"] = "employee";
               header("location:doctor_home.php");
           }else {
             $incorrect_login = True;
