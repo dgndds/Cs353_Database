@@ -112,7 +112,7 @@
 
                 <?php if( $incorrect_login ){ ?>
 
-                  <div class="badge bg-danger text-wrap" style="width: 6rem;">
+                  <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
                     Invalid username or password!
                   </div>
 
@@ -127,16 +127,16 @@
             </div>
 
             <div class="col-12 my-3">
-                <button class="btn btn-danger p-3" type="submit" name="btnPat">LOGIN AS PATIENT</button>
+                <button class="btn btn-primary p-3" type="submit" name="btnPat">LOGIN AS PATIENT</button>
             </div>
 
             <div class="col-12 mb-3">
-                <button class="btn btn-danger p-3" type="submit" name="btnEmp">LOGIN AS EMPLOYEE</button>
+                <button class="btn btn-primary p-3" type="submit" name="btnEmp">LOGIN AS EMPLOYEE</button>
               </form>
             </div>
 
             <div class="col-12">
-                <a href="register_patient.php" class="btn btn-danger p-3">REGISTER PATIENT</a>
+                <a href="register_patient.php" class="btn btn-warning p-3">REGISTER PATIENT</a>
             </div>
 
           </div>
