@@ -24,22 +24,18 @@
 
           $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM patient) AND password=?");
 
-          echo "Username: " . $tc . " Password: " . $password ;
-
           $query->execute(
             array(
                $tc, $password
              )
           );
 
-          echo "Row Count: " . $query->rowCount();
-
           if ( $query->rowCount() > 0 ){
               $_SESSION["TC"] = $tc;
               $_SESSION["password"] = $password;
               header("location:patient_home.php");
           }else {
-            echo "YANLISSSS PAT";
+            $incorrect_login = True;
           }
 
       } else if( isset($_POST['btnEmp']) && isset($_POST["TC"]) && isset($_POST["password"]) ) {
@@ -48,8 +44,6 @@
           $password = $_POST["password"];
 
           $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM employee) AND password=?");
-
-          echo "Username: " . $tc . " Password: " . $password ;
 
           $query->execute(
             array(
@@ -62,7 +56,7 @@
               $_SESSION["sid"] = $password;
               header("location:doctor_home.php");
           }else {
-            echo "YANLISSSS EMP";
+            $incorrect_login = True;
           }
 
       }
@@ -116,6 +110,19 @@
                   <input type="password" class="form-control" name="password">
                 </div>
 
+                <?php if( $incorrect_login ){ ?>
+
+                  <div class="badge bg-danger text-wrap" style="width: 6rem;">
+                    Invalid username or password!
+                  </div>
+
+
+                <?php
+
+                  $incorrect_login = False;
+                }
+
+                ?>
 
             </div>
 
