@@ -4,9 +4,9 @@
 
   session_start();
 
-  if ( isset($_COOKIE["TC"]) && $_COOKIE["type"] == "employee" ) {
+  if ( isset($_SESSION["TC"]) && $_SESSION["type"] == "employee" ) {
     header("location:doctor_home.php");
-  }else if ( isset($_COOKIE["TC"]) && $_COOKIE["type"] == "patient" ) {
+  }else if ( isset($_SESSION["TC"]) && $_SESSION["type"] == "patient" ) {
     header("location:patient_home.php");
   }
 
