@@ -1,3 +1,14 @@
+<?php
+
+  require_once("config.php");
+
+  session_start();
+
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "employee") ) {
+    header("location:index.php");
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>

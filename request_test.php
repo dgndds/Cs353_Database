@@ -33,8 +33,8 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="m-4 text-center">
-          <h2 class="h2">TEST RESULT HISTORY</h2>
+        <div class="my-4 text-center">
+          <h2 class="h2">Request Test</h2>
         </div>
 
         <div class="col-12 col-md-6 mx-auto bg-form p-5 rounded">
@@ -116,10 +116,8 @@
 
         </div>
 
-        <div class="col-12 mt-3">
-          <form class="d-flex justify-content-center">
-            <button class="btn btn-danger px-3" type="submit">Return</button>
-          </form>
+        <div class="col-12 text-center mt-3">
+          <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

@@ -22,7 +22,7 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -33,8 +33,8 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="my-4 text-center">
-          <h2 class="h2">TEST RESULT HISTORY</h2>
+        <div class="m-4 text-center">
+          <h2 class="h2 mb-3">ALL PATIENTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto mb-3">
@@ -55,10 +55,10 @@
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Patient Name</th>
-                  <th scope="col">Laboratorian Name</th>
+                  <th scope="col">Doctor Name</th>
                   <th scope="col">Date</th>
                   <th scope="col">Time</th>
-                  <th scope="col">Action</th>
+                  <th scope="col">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -68,7 +68,12 @@
                   <td>Seda</td>
                   <td>@mdo</td>
                   <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
+                  <td>
+                    <a href="patient_details.php">View Details,</a>
+                    <a href="prescribe_patient.php">Prescribe,</a>
+                    <a href="test_result.php">View Tests,</a>
+                    <a href="request_test.php">Request Test</a>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
@@ -76,7 +81,12 @@
                   <td>Seda</td>
                   <td>@fat</td>
                   <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
+                  <td>
+                    <a href="patient_details.php">View Details,</a>
+                    <a href="prescribe_patient.php">Prescribe,</a>
+                    <a href="test_result.php">View Tests,</a>
+                    <a href="request_test.php">Request Test</a>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
@@ -84,7 +94,12 @@
                   <td>Seda</td>
                   <td>@fat</td>
                   <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
+                  <td>
+                    <a href="patient_details.php" class="link-primary">View Details,</a>
+                    <a href="prescribe_patient.php" class="link-primary">Prescribe,</a>
+                    <a href="test_result.php" class="link-primary">View Tests,</a>
+                    <a href="request_test.php" class="link-primary">Request Test</a>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -112,7 +127,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
+          <a href="doctor_home.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

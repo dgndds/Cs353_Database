@@ -53,13 +53,13 @@
 
             <div class="col-12 mb-3">
               <form class="d-flex justify-content-center">
-                <a href="see_appointments.php" class="btn btn-danger p-3 w-100">View Appointments</a>
+                <a href="see_appointments.php" class="btn btn-danger p-3 w-100">View Tests Requests</a>
               </form>
             </div>
 
             <div class="col-12 mb-3">
               <form class="d-flex justify-content-center">
-                <a href="view_patients.php" class="btn btn-danger p-3 w-100">View Patients</a>
+                <a href="view_patients.php" class="btn btn-danger p-3 w-100">View Tests</a>
               </form>
             </div>
 

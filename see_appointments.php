@@ -39,6 +39,7 @@
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
+            <form class="d-flex">
             <table class="table table-sm table-striped table-hover">
               <thead>
                 <tr>
@@ -101,7 +102,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <button type="submit" class="btn btn-danger p-2">Return</button>
+          <a href="doctor_home.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>
