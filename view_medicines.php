@@ -1,3 +1,7 @@
+<?php
+  require_once("config.php");
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -39,45 +43,48 @@
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
-            <form class="d-flex">
-            <table class="table table-sm table-striped table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Medicine ID</th>
-                  <th scope="col">Medicine Name</th>
-                  <th scope="col">Medicine Type</th>
-                  <th scope="col">QTY</th>
-                  <th scope="col">Add</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>5</td>
-                  <td>Parcetmol</td>
-                  <td>Tablets</td>
-                  <td>10</td>
-                  <td><a href="#" class="btn btn-danger p-2">Add More</a></td>
-                </tr>
-                <tr>
-                <th scope="row">1</th>
-                  <td>15</td>
-                  <td>Claritine</td>
-                  <td>Syrup</td>
-                  <td>5</td>
-                  <td><a href="#" class="btn btn-danger p-2">Add More</a></td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>25</td>
-                  <td>Augmentin</td>
-                  <td>Tablets</td>
-                  <td>1</td>
-                  <td><a href="#" class="btn btn-danger p-2">Add More</a></td>
-                </tr>
-              </tbody>
-            </table>
+          <?php
+                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+                 if (isset($_GET['medicine_id'])) {
+                  //getting value passed in url
+                  $productieorder =  $_GET['medicine_id'];
+                  $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + 1 where medicine_id =$productieorder");
+                  $query2->execute();
+                }               
+          ?>   
+              <?php
+                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+                $sql = "SELECT * FROM medicine";
+                $query1= $connection->prepare("select * from medicine");
+                $query1->execute();               
+                echo "
+                  <form class=\"d-flex\">
+                  <table class=\"table table-sm table-striped table-hover\">
+                  <thead>
+                    <tr>
+                      <th scope=\"col\"></th>
+                      <th scope=\"col\">Medicine ID</th>
+                      <th scope=\"col\">Medicine Name</th>
+                      <th scope=\"col\">Medicine Type</th>
+                      <th scope=\"col\">QTY</th>
+                      <th scope=\"col\">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>";
+                
+                while($row1 = $query1->fetch()){?>
+                   <tr>
+                          <th scope="row"></th>
+                          <td><?php echo $row1['medicine_id']?></td>
+                          <td><?php echo $row1['medicine_name']?></td>
+                          <td><?php echo $row1['type']?></td>
+                          <td><?php echo $row1['medicine_qty']?></td>
+                          <?php echo "<td> <a href='view_medicines.php?medicine_id=".$row1['medicine_id']."' class=\"btn btn-danger p-2\">Add</a></td>"?>
+                          </tr>
+               <?php }; 
+                echo "</tbody>
+                      </table>";
+              ?> 
           </div>
         </div>
 
