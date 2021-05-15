@@ -43,20 +43,11 @@
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
-          <?php
-                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
-                 if (isset($_GET['medicine_id'])) {
-                  //getting value passed in url
-                  $productieorder =  $_GET['medicine_id'];
-                  $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + 1 where medicine_id =$productieorder");
-                  $query2->execute();
-                }               
-          ?>   
               <?php
                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
                 $sql = "SELECT * FROM medicine";
                 $query1= $connection->prepare("select * from medicine");
-                $query1->execute();               
+                $query1->execute();          
                 echo "
                   <form class=\"d-flex\">
                   <table class=\"table table-sm table-striped table-hover\">
@@ -85,6 +76,16 @@
                 echo "</tbody>
                       </table>";
               ?> 
+              <?php
+                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+                 if (isset($_GET['medicine_id'])) {
+                  //getting value passed in url
+                  $productieorder =  $_GET['medicine_id'];
+                  $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + 1 where medicine_id =$productieorder");
+                  $query2->execute();
+                  header("location: view_medicines.php");
+                }                    
+          ?>   
           </div>
         </div>
 

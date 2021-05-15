@@ -1,3 +1,7 @@
+<?php
+  require_once("config.php");
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -39,41 +43,47 @@
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
-            <form class="d-flex">
-            <table class="table table-sm table-striped table-hover">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Patient Name</th>
-                  <th scope="col">Prescribing Doctor</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Prescription</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Hakan Kara</td>
-                  <td>Dr. Seda</td>
-                  <td>12-05-2021</td>
-                  <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
-                </tr>
-                <tr>
-                <th scope="row">1</th>
-                  <td>Ahmet Kara</td>
-                  <td>Dr. Seda</td>
-                  <td>12-05-2021</td>
-                  <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Selin Kara</td>
-                  <td>Dr. Seda</td>
-                  <td>12-05-2021</td>
-                  <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
-                </tr>
-              </tbody>
-            </table>
+          <?php
+                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+                $query1= $connection->prepare("select * from book_appointment where appointment_id in (select appointment_id from prescribe)");
+                $query1->execute();          
+                echo "
+                  <form class=\"d-flex\">
+                  <table class=\"table table-sm table-striped table-hover\">
+                  <thead>
+                    <tr>
+                      <th scope=\"col\"></th>
+                      <th scope=\"col\">Appointment ID</th>
+                      <th scope=\"col\">Prescribing Doctor</th>
+                      <th scope=\"col\">Patient Name</th>
+                      <th scope=\"col\">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>";
+                
+                while($row1 = $query1->fetch()){
+                    $app = $row1['appointment_id'];
+                    $query2= $connection->prepare("select * from User where TC in (select doctorTC from book_appointment where appointment_id in (select appointment_id from prescribe where appointment_id = $app))");
+                    $query2->execute(); 
+                    while($row2 = $query2->fetch()){
+                      $doctor = $row2['TC'];
+                      $query3= $connection->prepare("select * from User where TC in (select patientTC from book_appointment where appointment_id in (select appointment_id from prescribe where doctorTC = $doctor and appointment_id = $app))");
+                      $query3->execute(); 
+                      $row3 = $query3->fetch();
+                ?>
+                   <tr>
+                          <th scope="row"></th>
+                          <td><?php echo $row1['appointment_id']?></td>
+                          <td><?php echo "Dr. " . $row2['first_name'] . " " . $row2['last_name'] ?></td>
+                          <td><?php echo $row3['first_name'] . " " . $row3['last_name'] ?></td>
+                          <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
+                  </tr>
+               <?php }; 
+                };
+                echo "</tbody>
+                      </table>";
+              ?> 
           </div>
         </div>
 
