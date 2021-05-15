@@ -56,14 +56,14 @@
                   <td>5</td>
                   <td>Parcetmol</td>
                   <td>Tablets</td>
-                  <td><a href="#" class="btn btn-danger p-3">Supply</a></td>
+                  <td><a href="#" class="btn btn-danger p-2">Supply</a></td>
                 </tr>
                 <tr>
                 <th scope="row">1</th>
                   <td>15</td>
                   <td>Claritine</td>
                   <td>Syrup</td>
-                  <td><a href="#" class="btn btn-danger p-3">Supply</a></td>
+                  <td><a href="#" class="btn btn-danger p-2">Supply</a></td>
                 </tr>
               </tbody>
             </table>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="doctor_home.php" class="btn btn-danger p-2">Return</a>
+          <a href="pharmacist_home.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

@@ -102,7 +102,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="doctor_home.php" class="btn btn-danger p-2">Return</a>
+          <a href="pharmacist_home.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

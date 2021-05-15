@@ -63,14 +63,14 @@
                   <td>Ahmet Kara</td>
                   <td>Dr. Seda</td>
                   <td>12-05-2021</td>
-                  <td><td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td></td>
+                  <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
                 </tr>
                 <tr>
                   <th scope="row">2</th>
                   <td>Selin Kara</td>
                   <td>Dr. Seda</td>
                   <td>12-05-2021</td>
-                  <td><td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td></td>
+                  <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
                 </tr>
               </tbody>
             </table>
@@ -98,7 +98,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="doctor_home.php" class="btn btn-danger p-2">Return</a>
+          <a href="pharmacist_home.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

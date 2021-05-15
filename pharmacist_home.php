@@ -33,7 +33,7 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
+            <a class="navbar-brand">Welcome Dr. Ibrahim</a>
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
