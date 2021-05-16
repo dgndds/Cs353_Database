@@ -45,7 +45,7 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2 mb-3">PATIENT APPOINTMENT HISTORY</h2>
+          <h2 class="h2 mb-3">PATIENT APPOINTMENTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -55,7 +55,7 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">TC</th>
+                  <th scope="col">Id</th>
                   <th scope="col">Doctor Name Name</th>
                   <th scope="col">Date</th>
                   <th scope="col">Status</th>
@@ -134,17 +134,14 @@
 
                                 <td>
                                   <?php
-                                    if ( !$flag ) { ?>
+                                    if ( $flag ) { ?>
 
-                                      <a href="patient_details.php?tc_number=<?=$data['patientTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
+                                      <a href="diagnose.php?tc_number=<?=$data['doctorTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
 
                                       <?php
                                     }else{
                                   ?>
-                                  <a href="diagnose.php?tc_number=<?=$data['patientTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Diagnose,</a>
-                                  <a href="prescribe_patient.php?tc_number=<?=$data['patientTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Prescribe,</a>
-                                  <a href="test_result.php?tc_number=<?=$data['patientTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View Tests,</a>
-                                  <a href="request_test.php?tc_number=<?=$data['patientTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Request Test</a>
+                                  
                                 </td>
                               <?php } ?>
                               </tr>
@@ -191,10 +188,7 @@
         <div class="col-12 text-center mt-3">
           <a href="index.php" class="btn btn-danger p-2">Return</a>
         </div>
-
       </div>
-
-
     </div>
 
 
