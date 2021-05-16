@@ -54,7 +54,7 @@
                 $name = $row1['first_name'] . " " . $row1['last_name'];
               }
             ?>
-            <a class="navbar-brand"><?php echo "Welcome Dr. ".$name;?></a>
+            <a class="navbar-brand"><?php echo "Welcome Pharmacist ".$name;?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -68,50 +68,108 @@
         <div class="m-4 text-center">
           <h2 class="h2 mb-3">MEDICINIES</h2>
         </div>
-
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
+            <form action="" method="POST" style="width:50%;">
+              <div class="input-group mb-1">
+                <input type="number" name="look" class="form-control" placeholder="Medicine ID" style="width: 5px;">
+                <input type="submit" class="btn btn-primary" value="Search">
+              </div>
+            </form>
               <?php
-                $sql = "SELECT * FROM medicine";
-                $query1= $connection->prepare("select * from medicine");
-                $query1->execute();
-                echo "
-                  <form class=\"d-flex\">
-                  <table class=\"table table-sm table-striped table-hover\">
-                  <thead>
+                if(isset($_POST['look'])){
+                  $med_id = $_POST['look'];
+                  $query1= $connection->prepare("select * from medicine where concat(medicine_id) like '%$med_id%'");
+                  $query1->execute();                      
+                  echo "
+                    <form class=\"d-flex\">
+                    <table class=\"table table-sm table-striped table-hover\">
+                    <thead>
+                      <tr>
+                        <th scope=\"col\"></th>
+                        <th scope=\"col\">Medicine ID</th>
+                        <th scope=\"col\">Medicine Name</th>
+                        <th scope=\"col\">Medicine Type</th>
+                        <th scope=\"col\">QTY</th>
+                        <th scope=\"col\">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>";
+                if($query1->rowCount() > 0){
+                  while($row1 = $query1->fetch()){?>
                     <tr>
-                      <th scope=\"col\"></th>
-                      <th scope=\"col\">Medicine ID</th>
-                      <th scope=\"col\">Medicine Name</th>
-                      <th scope=\"col\">Medicine Type</th>
-                      <th scope=\"col\">QTY</th>
-                      <th scope=\"col\">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>";
-
-                while($row1 = $query1->fetch()){?>
-                   <tr>
-                          <th scope="row"></th>
-                          <td><?php echo $row1['medicine_id'];?></td>
-                          <td><?php echo $row1['medicine_name'];?></td>
-                          <td><?php echo $row1['type'];?></td>
-                          <td><?php echo $row1['medicine_qty'];?></td>
-                          <td>
-                              <form></form>
-                              <form action="view_medicines.php?medicine_id=<?=$row1['medicine_id']?>" method="POST">
-                                <div class="input-group mb-1">
-                                  <input type="number" min="1" name="search" class="form-control" placeholder="value" style="width: 5px">
-                                  <input type="submit" class="btn btn-danger" value="Add">
-                                </div>
-                              </form>
-                          </td>
-                    </tr>
-               <?php };
-                echo "</tbody>
-                      </table>";
-              ?>
-
+                            <th scope="row"></th>
+                            <td><?php echo $row1['medicine_id'];?></td>
+                            <td><?php echo $row1['medicine_name'];?></td>
+                            <td><?php echo $row1['type'];?></td>
+                            <td><?php echo $row1['medicine_qty'];?></td>
+                            <td>
+                                <form></form>
+                                <form action="view_medicines.php?medicine_id=<?=$row1['medicine_id']?>" method="POST">
+                                  <div class="input-group mb-1">
+                                    <input type="number" min="1" name="search" class="form-control" placeholder="value" style="width: 5px;">
+                                    <input type="submit" class="btn btn-danger" value="Add">
+                                  </div>
+                                </form>
+                            </td>
+                      </tr>
+                  <?php }; 
+                    echo "</tbody>
+                          </table>
+                          </form>";
+                  }
+                  else{
+                    echo "
+                          <tr>
+                             <td colspan=\"6\">No Records Found</td>
+                          </tr>
+                      </tbody>
+                      </table>
+                      </form>";
+                  }
+                }
+                else{
+                  $query1= $connection->prepare("select * from medicine");
+                  $query1->execute();                      
+                  echo "
+                    <form class=\"d-flex\">
+                    <table class=\"table table-sm table-striped table-hover\">
+                    <thead>
+                      <tr>
+                        <th scope=\"col\"></th>
+                        <th scope=\"col\">Medicine ID</th>
+                        <th scope=\"col\">Medicine Name</th>
+                        <th scope=\"col\">Medicine Type</th>
+                        <th scope=\"col\">QTY</th>
+                        <th scope=\"col\">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>";
+                if($query1->rowCount() > 0){
+                  while($row1 = $query1->fetch()){?>
+                    <tr>
+                            <th scope="row"></th>
+                            <td><?php echo $row1['medicine_id'];?></td>
+                            <td><?php echo $row1['medicine_name'];?></td>
+                            <td><?php echo $row1['type'];?></td>
+                            <td><?php echo $row1['medicine_qty'];?></td>
+                            <td>
+                                <form></form>
+                                <form action="view_medicines.php?medicine_id=<?=$row1['medicine_id']?>" method="POST">
+                                  <div class="input-group mb-1">
+                                    <input type="number" min="1" name="search" class="form-control" placeholder="value" style="width: 5px;">
+                                    <input type="submit" class="btn btn-danger" value="Add">
+                                  </div>
+                                </form>
+                            </td>
+                      </tr>
+                  <?php }; 
+                    echo "</tbody>
+                          </table>
+                          </form>";
+                  }
+                } 
+                ?>
           </div>
         </div>
         <div class="col-12">
