@@ -372,10 +372,24 @@
 
               </div>
 
-              <a href="request_test.php?tc_number=<?=$_GET['tc_number']?>&appointment=<?=$_GET['appointment']?>" class="fs-4 link-primary">Request Test</a>
+              <?php
 
-              
+              $query = $connection->prepare("
+                SELECT description FROM appointment WHERE appointment_id=?;"
+              );
 
+              $query->execute(
+                array(
+                  $_GET["appointment"]
+                )
+              );
+
+              $all_tests_resolved = 0;
+
+              if ( $all_tests_resolved ) {
+
+
+              ?>
               <h3 class="h3 text-center my-4 mb-2">Diagnose</h3>
 
               <div class="col-12 col-md-5 mx-auto">
@@ -437,7 +451,7 @@
                 </p>
 
                 <a href="diagnose.php?tc_number=<?=$_GET['tc_number']?>&appointment=<?=$_GET['appointment']?>&delete_diagnose=true" class="btn btn-danger p-2">Delete Diagnose!</a>
-
+                <?php } ?>
               </div>
 
               <h3 class="h3 text-center my-4 mb-2">Past Results</h3>

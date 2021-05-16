@@ -68,10 +68,9 @@
                     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                     $query = $connection->prepare("
-                    SELECT first_name, last_name, test_name, components, test.test_id, patientTC
+                    SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id
                     FROM
-                    ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=doctorTC) JOIN test ON test.test_id=request_test.test_id;"
-                    );
+                    ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=doctorTC) JOIN test ON test.test_id=request_test.test_id;");
 
                     $query->execute();
 
@@ -125,11 +124,11 @@
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
                           if ( $finished ) { ?>
-                            <td><a href="enter_result.php?name=<?=$name?>&test_name=<?=$data['test_name']?>&comp_name=<?=$data['components']?>&finished=true">View</a></td>
+                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>">View</a></td>
                             <?php
                           }else{ ?>
 
-                            <td><a href="enter_result.php?name=<?=$name?>&test_name=<?=$data['test_name']?>&comp_name=<?=$data['components']?>">Add</a></td>
+                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>">Add</a></td>
 
                         <?php } ?>
 

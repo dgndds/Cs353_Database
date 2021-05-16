@@ -57,7 +57,25 @@
 
                   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                  if ( isset($_GET["name"]) && isset($_GET["test_name"]) && isset($_GET["comp_name"]) ) {
+                  if ( isset($_GET["appointment"]) ) {
+
+                    $query = $connection->prepare("
+                    SELECT * FROM result WHERE test_id=?"
+                    );
+
+                    $query->execute(
+                      array(
+                        $_GET["appointment"]
+                      )
+                    );
+
+                    if ( $query->rowCount() > 0 ) {
+
+                      while( $data = $query->fecth() ){
+                        //echo $data["last_name"];
+                      }
+
+                    }
 
               ?>
 
@@ -66,7 +84,7 @@
                   <p> <b>Patient Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <p class="fs-6"> <?=$_GET["name"]?> </p>
+                  <p class="fs-6">  </p>
                 </div>
               </div>
 
@@ -75,7 +93,7 @@
                   <p> <b>Test Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <p class="fs-6"> <?=$_GET["test_name"]?> </p>
+                  <p class="fs-6"> </p>
                 </div>
               </div>
 
@@ -87,16 +105,8 @@
                   <form action="enter_result.php" method="POST">
                   <select name="selected_component" class="form-select" aria-label="Select">
                     <option selected>Select</option>
-                    <?php
 
-                      $components = explode( " ", $_GET["comp_name"]);
-
-                      foreach ($components as $component) { ?>
-                          <option value="<?=$component?>"><?=$component?></option>
-                        <?php
-                      }
-
-                    ?>
+                          <option value="1">1</option>
                   </select>
 
                 </div>
@@ -127,7 +137,9 @@
     </div>
 
     <?php
-        }
+  }else {
+    header("location:view_tests.php");
+  }
 
       } catch (PDOException $err) {
         echo "<h1>Cant Connect Database!</h1>";
