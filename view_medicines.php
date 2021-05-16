@@ -1,9 +1,21 @@
 <?php
   require_once("config.php");
   session_start();
-  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);          
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);     
 ?>
-
+<?php
+  if (isset($_GET['medicine_id']) && isset($_POST['search'])) {
+   //getting value passed in url
+   $tc = $_SESSION["TC"];
+   $productieorder =  $_GET['medicine_id'];
+   $incrementBy = $_POST['search'];
+   $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + $incrementBy where medicine_id =$productieorder");
+   $query2->execute();
+   $query3 = $connection->prepare("insert into supply values ($productieorder, $tc)");
+   $query3->execute();
+   header("location: view_medicines.php");              
+  }                    
+?>   
 <!doctype html>
 <html lang="en">
   <head>
@@ -76,30 +88,27 @@
                 while($row1 = $query1->fetch()){?>
                    <tr>
                           <th scope="row"></th>
-                          <td><?php echo $row1['medicine_id']?></td>
-                          <td><?php echo $row1['medicine_name']?></td>
-                          <td><?php echo $row1['type']?></td>
-                          <td><?php echo $row1['medicine_qty']?></td>
-                          <?php echo "<td> <a href='view_medicines.php?medicine_id=".$row1['medicine_id']."' class=\"btn btn-danger p-2\">Add</a></td>"?>
-                          </tr>
+                          <td><?php echo $row1['medicine_id'];?></td>
+                          <td><?php echo $row1['medicine_name'];?></td>
+                          <td><?php echo $row1['type'];?></td>
+                          <td><?php echo $row1['medicine_qty'];?></td>
+                          <td>
+                              <form></form>
+                              <form action="view_medicines.php?medicine_id=<?=$row1['medicine_id']?>" method="POST">
+                                <div class="input-group mb-1">
+                                  <input type="number" min="1" name="search" class="form-control" placeholder="value" style="width: 5px">
+                                  <input type="submit" class="btn btn-danger" value="Add">
+                                </div>
+                              </form>
+                          </td>
+                    </tr>
                <?php }; 
                 echo "</tbody>
                       </table>";
               ?> 
-              <?php
-                 if (isset($_GET['medicine_id'])) {
-                  //getting value passed in url
-                  $productieorder =  $_GET['medicine_id'];
-                  $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + 1 where medicine_id =$productieorder");
-                  $query2->execute();
-                  $query3 = $connection->prepare("insert into supply values ($productieorder, $tc)");
-                  $query3->execute();
-                  header("location: view_medicines.php");
-                }                    
-          ?>   
+              
           </div>
         </div>
-
         <div class="col-12">
           <div class="mx-auto px-100 my-3">
             <nav aria-label="...">
