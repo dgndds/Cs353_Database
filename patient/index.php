@@ -5,9 +5,11 @@
   session_start();
 
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
+    //SELECT first_name,last_name FROM heroku_115a957c1ea7ee2.user where TC=1147483647;
+    
+    
     header("location:../index.php");
   }
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -33,7 +35,31 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
+            <a class="navbar-brand">Welcome 
+            <?php
+            try{
+              $tc = $_SESSION["TC"];
+          
+              $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+          
+              $query = $connection->prepare("SELECT first_name,last_name FROM user where TC=?");
+            
+              $query->execute(
+                array(
+                $tc
+              )
+            );
+            
+            $data = $query->fetch();
+            
+            $_SESSION['userName'] = $data["first_name"]." ".$data["last_name"];
+            }catch(PDOException $err){
+              echo "default";
+            }
+            
+            echo $_SESSION['userName'];
+            ?>
+            </a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -59,7 +85,7 @@
 
             <div class="col-12 mb-3">
               <form class="d-flex justify-content-center">
-                <a href="#" class="btn btn-danger p-3 w-100">Book Appointment</a>
+                <a href="patient_book_appointment.php" class="btn btn-danger p-3 w-100">Book Appointment</a>
               </form>
             </div>
 

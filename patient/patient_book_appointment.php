@@ -16,12 +16,12 @@
     if(isset($_POST['doctorId']) && isset($_POST['chosenDate'])){
       $selectedDoctor = $_POST['doctorId'];
       $selectedDate = $_POST['chosenDate'];
-      $userTc = $_POST['TC'];
+      $userTc = $_SESSION['TC'];
 
       echo 'You have chosen: ' . $selectedDoctor;
       echo 'You have chosen: ' . $selectedDate;
       echo 'Your tc: '. $userTc;
-      //INSERT INTO time_shift (TC, shift_date, available) VALUES (?, ?, 'reserved');
+      
       $query = $connection->prepare("INSERT INTO time_shift (TC, shift_date, available) VALUES (?, ?, 'reserved');");
 
       $query->execute(
@@ -72,7 +72,7 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome <?php echo $_SESSION["userName"]?></a>
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -124,7 +124,7 @@
               </div>
             </div>
             <div class="col-12 col-md-4">
-                <input class="btn btn-danger" type="submit" value="Search">
+                <input class="btn btn-danger" type="submit" value="Search" name="btnSbmt">
               </form>
             </div>
           </div>
@@ -135,6 +135,7 @@
           $query->execute();
         ?>
 
+        <?php if(isset($_POST['btnSbmt'])){?>
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <div class="col-12">
@@ -159,6 +160,7 @@
                    );
 
                    $doctors = $query;
+                   $index = 1;
                    while($data = $doctors->fetch()){
                      for($i = 1; $i <= 30; $i++){
                       //If size is greater than zero than that date is reserved
@@ -175,16 +177,17 @@
                         )
                       );
                       
-                      if ($query->rowCount() == 0 ){
+                      if ($query->rowCount() == 0 && date("Y-m-d") <= $date){
                         $dateToShow = $i."-".$selectedMonth."-2021";
                         echo "<form action=\"patient_book_appointment.php\" method=\"post\">";
                         echo "<tr>";
-                        echo "<th scope=\"row\">$i</th>";
+                        echo "<th scope=\"row\">$index</th>";
                         echo "<td><input type=\"hidden\" name=\"doctorId\" value=\"".$data["TC"]."\">".$data["first_name"]." ".$data["last_name"]."</td>";
                         echo "<td><input type=\"hidden\" name=\"chosenDate\" value=\"".$date."\">".$dateToShow."</td>";
                         echo "<td><input type=\"submit\" value=\"Appoint\"></td>";
                         echo "</tr>";
                         echo "</form>";
+                        $index++;
                       }
                     }
                    }
@@ -194,6 +197,7 @@
             </div>
           </div>
         </div>
+        <?php }?>
 
         <div class="col-12">
           <div class="mx-auto px-100 my-3">
