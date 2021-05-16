@@ -51,7 +51,7 @@
                 $name = $row1['first_name'] . " " . $row1['last_name'];
               }
             ?>
-            <a class="navbar-brand"><?php echo "Welcome Dr. ".$name;?></a>
+            <a class="navbar-brand"><?php echo "Welcome Pharmacist ".$name;?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
