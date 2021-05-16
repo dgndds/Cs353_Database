@@ -1,11 +1,11 @@
 <?php
 
-  require_once("config.php");
+  require_once("../config.php");
 
   session_start();
 
-  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "employee") ) {
-    header("location:index.php");
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+    header("location:../index.php");
   }
 
 ?>
@@ -20,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <title>Hospital System</title>
 
@@ -35,7 +35,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
             <form class="d-flex">
-              <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
+              <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
           </div>
         </nav>
@@ -60,6 +60,12 @@
             <div class="col-12 mb-3">
               <form class="d-flex justify-content-center">
                 <a href="view_patients.php" class="btn btn-danger p-3 w-100">View Patients</a>
+              </form>
+            </div>
+
+            <div class="col-12 mb-3">
+              <form class="d-flex justify-content-center">
+                <a href="manage_days.php" class="btn btn-danger p-3 w-100">Manage Days</a>
               </form>
             </div>
 

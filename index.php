@@ -4,12 +4,17 @@
 
   session_start();
 
-  if ( isset($_SESSION["TC"]) && $_SESSION["type"] == "employee" ) {
-    header("location:doctor_home.php");
-  }else if ( isset($_SESSION["TC"]) && $_SESSION["type"] == "patient" ) {
-    header("location:patient_home.php");
+  if ( isset($_SESSION["TC"]) ) {
+    if ( $_SESSION["type"] == "doctor" ) {
+      header("location:doctor/");
+    }else if ( $_SESSION["type"] == "patient" ) {
+      header("location:patient/");
+    }else if ( $_SESSION["type"] == "laboratorian" ) {
+      header("location:laboratorian/");
+    }else if ( $_SESSION["type"] == "pharmacist" ) {
+      header("location:pharmacist/");
+    }
   }
-
 
   try {
 
@@ -34,7 +39,7 @@
               $_SESSION["TC"] = $tc;
               $_SESSION["password"] = $password;
               $_SESSION["type"] = "patient";
-              header("location:patient_home.php");
+              header("location:patient/");
           }else {
             $incorrect_login = True;
           }
@@ -55,8 +60,36 @@
           if ( $query->rowCount() > 0 ){
               $_SESSION["TC"] = $tc;
               $_SESSION["sid"] = $password;
-              $_SESSION["type"] = "employee";
-              header("location:doctor_home.php");
+
+              $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM doctor) AND password=?");
+
+              $query->execute(
+                array(
+                   $tc, $password
+                 )
+              );
+
+              if ( $query->rowCount() > 0  ) {
+                $_SESSION["type"] = "doctor";
+                header("location:doctor/");
+              }else {
+                $query = $connection->prepare("SELECT * FROM user WHERE ? in (SELECT TC FROM pharmacist) AND password=?");
+
+                $query->execute(
+                  array(
+                     $tc, $password
+                   )
+                );
+
+                if ( $query->rowCount() > 0  ) {
+                  $_SESSION["type"] = "pharmacist";
+                  header("location:pharmacist/");
+                }else {
+                  $_SESSION["type"] = "laboratorian";
+                  header("location:laboratorian/");
+                }
+              }
+
           }else {
             $incorrect_login = True;
           }

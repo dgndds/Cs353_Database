@@ -1,3 +1,14 @@
+<?php
+
+  require_once("../config.php");
+
+  session_start();
+
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+    header("location:../index.php");
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <title>Hospital System</title>
 
@@ -24,7 +35,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome Hakan Kara</a>
             <form class="d-flex">
-              <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
+              <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
           </div>
         </nav>
@@ -57,35 +68,99 @@
                   <th scope="col">Patient Name</th>
                   <th scope="col">Laboratorian Name</th>
                   <th scope="col">Date</th>
-                  <th scope="col">Time</th>
+                  <th scope="col">Test Type</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th scope="row">1</th>
-                  <td>Hakan Kara</td>
-                  <td>Seda</td>
-                  <td>@mdo</td>
-                  <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Hakan Kara</td>
-                  <td>Seda</td>
-                  <td>@fat</td>
-                  <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>Hakan Kara</td>
-                  <td>Seda</td>
-                  <td>@fat</td>
-                  <td>Mark</td>
-                  <td><a href="view_test_result.php">View</a></td>
-                </tr>
+                <?php
+
+                  try {
+
+                    $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+                    if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+
+                          $tc = $_SESSION["TC"];
+
+                          $query = $connection->prepare("
+                            Select app_date, user.TC, first_name, last_name
+
+                            FROM appointment, user JOIN patient ON user.TC=patient.TC
+
+                            where
+
+                            (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=12345878)
+
+                            ORDER BY app_date DESC LIMIT 30;"
+                          );
+
+                          $query->execute(
+                            array(
+                               $tc, $tc
+                             )
+                          );
+
+                          if ( $query->rowCount() > 0 ){
+
+                            $counter = 0;
+                            while($data = $query->fetch()) { ?>
+
+                               <tr>
+                                <th scope="row"><?php echo $counter++; ?></th>
+                                <td><?php echo $data['TC']; ?></td>
+                                <td><?php echo $data['first_name'] . " " . $data['last_name']; ?></td>
+                                <td><?php echo $data['app_date']; ?></td>
+
+                                <td>
+
+                                <?php
+
+                                  $today = date("Y-m-d");
+
+                                  if ( $today == $data['app_date'] ) { ?>
+
+                                    Continuing &nbsp;<a href="#" class="btn btn-warning disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
+
+                                  <?php
+                                  }else if($today < $data['app_date']){ ?>
+
+                                    Undone &nbsp;<a href="#" class="btn btn-danger disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
+
+                                  <?php
+                                  }else { ?>
+
+                                    Done &nbsp;<a href="#" class="btn btn-success disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
+
+                                  <?php
+                                  }
+
+                                ?>
+
+                                </td>
+
+                                <td>
+                                  <a href="diagnose.php" class="link-primary">Diagnose,</a>
+                                  <a href="prescribe_patient.php" class="link-primary">Prescribe,</a>
+                                  <a href="test_result.php" class="link-primary">View Tests,</a>
+                                  <a href="request_test.php" class="link-primary">Request Test</a>
+                                </td>
+
+                              </tr>
+
+                          <?php  }
+
+                          }else {
+
+                          }
+
+                    }
+
+                  } catch (PDOException $err) {
+                    echo "<h1>Cant Connect Database!</h1>";
+                  }
+
+                ?>
               </tbody>
             </table>
           </div>

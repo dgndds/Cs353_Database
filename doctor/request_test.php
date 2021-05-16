@@ -1,3 +1,14 @@
+<?php
+
+  require_once("../config.php");
+
+  session_start();
+
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+    header("location:../index.php");
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <title>Hospital System</title>
 
@@ -24,7 +35,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome Hakan Kara</a>
             <form class="d-flex">
-              <button class="btn btn-danger" type="submit">Logout</button>
+              <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
           </div>
         </nav>
