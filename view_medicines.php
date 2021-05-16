@@ -1,5 +1,7 @@
 <?php
   require_once("config.php");
+  session_start();
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);          
 ?>
 
 <!doctype html>
@@ -26,7 +28,16 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Dr. Ibrahim </a>
+            <?php
+              if (isset($_SESSION["TC"])) {
+                $tc = $_SESSION["TC"];
+                $query1= $connection->prepare("select * from user where TC = $tc");
+                $query1->execute();
+                $row1 = $query1->fetch();
+                $name = $row1['first_name'] . " " . $row1['last_name'];
+              } 
+            ?> 
+            <a class="navbar-brand"><?php echo "Welcome Dr. ".$name;?></a>
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -44,7 +55,6 @@
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
               <?php
-                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
                 $sql = "SELECT * FROM medicine";
                 $query1= $connection->prepare("select * from medicine");
                 $query1->execute();          
@@ -77,7 +87,6 @@
                       </table>";
               ?> 
               <?php
-                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
                  if (isset($_GET['medicine_id'])) {
                   //getting value passed in url
                   $productieorder =  $_GET['medicine_id'];

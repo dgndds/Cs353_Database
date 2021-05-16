@@ -3,7 +3,7 @@
   require_once("config.php");
 
   session_start();
-
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);          
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "employee") ) {
     header("location:index.php");
   }
@@ -33,7 +33,16 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Dr. Ibrahim</a>
+            <?php
+              if (isset($_SESSION["TC"])) {
+                $tc = $_SESSION["TC"];
+                $query1= $connection->prepare("select * from user where TC = $tc");
+                $query1->execute();
+                $row1 = $query1->fetch();
+                $name = $row1['first_name'] . " " . $row1['last_name'];
+              } 
+            ?> 
+            <a class="navbar-brand"><?php echo "Welcome Dr. ".$name;?></a>
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>

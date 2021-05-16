@@ -1,5 +1,7 @@
 <?php
   require_once("config.php");
+  session_start();
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 ?>
 
 <!doctype html>
@@ -26,7 +28,17 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Dr. Ibrahim </a>
+            <?php
+              if (isset($_SESSION["TC"])) {
+                $tc = $_SESSION["TC"];
+                $query1= $connection->prepare("select * from user where TC = $tc");
+                $query1->execute();
+                $row1 = $query1->fetch();
+                $name = $row1['first_name'] . " " . $row1['last_name'];
+              } 
+            ?> 
+            <a class="navbar-brand"><?php echo "Welcome Dr. ".$name;?></a>
+
             <form class="d-flex">
               <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -44,8 +56,6 @@
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
           <?php
-                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
-
                 $query1= $connection->prepare("select * from book_appointment where appointment_id in (select appointment_id from prescribe)");
                 $query1->execute();          
                 echo "
@@ -54,6 +64,7 @@
                   <thead>
                     <tr>
                       <th scope=\"col\"></th>
+                      <th scope=\"col\">Date</th>
                       <th scope=\"col\">Appointment ID</th>
                       <th scope=\"col\">Prescribing Doctor</th>
                       <th scope=\"col\">Patient Name</th>
@@ -64,7 +75,7 @@
                 
                 while($row1 = $query1->fetch()){
                     $app = $row1['appointment_id'];
-                    $query2= $connection->prepare("select * from User where TC in (select doctorTC from book_appointment where appointment_id in (select appointment_id from prescribe where appointment_id = $app))");
+                    $query2= $connection->prepare("select * from User where TC in (select doctorTC from book_appointment where appointment_id in (select appointment_id from prescribe where appointment_id = $app and supplied = 0))");
                     $query2->execute(); 
                     while($row2 = $query2->fetch()){
                       $doctor = $row2['TC'];
@@ -74,11 +85,19 @@
                 ?>
                    <tr>
                           <th scope="row"></th>
-                          <td><?php echo $row1['appointment_id']?></td>
-                          <td><?php echo "Dr. " . $row2['first_name'] . " " . $row2['last_name'] ?></td>
-                          <td><?php echo $row3['first_name'] . " " . $row3['last_name'] ?></td>
-                          <td><a href="prescription.php" class="btn btn-danger p-2">View Prescription</a></td>
-                  </tr>
+                          <?php
+                              $query= $connection->prepare("select * from appointment where appointment_id = $app");
+                              $query->execute();
+                              $row = $query->fetch();
+                              $date = $row['app_date'];
+                          ?>
+                          <td><?php echo $date;?></td>
+                          <td><?php echo $row1['appointment_id'];?></td>
+                          <td><?php echo "Dr. " . $row2['first_name'] . " " . $row2['last_name']; ?></td>
+                          <td><?php echo $row3['first_name'] . " " . $row3['last_name']; $fullName = $row3['first_name'] . " " . $row3['last_name']; ?></td>
+                          
+                          <?php echo "<td> <a href='prescription.php?app_id=".$row1['appointment_id']."& p_id=".$fullName."' class=\"btn btn-danger p-2\">View Prescription</a></td>"?>
+                    </tr>
                <?php }; 
                 };
                 echo "</tbody>
