@@ -92,6 +92,8 @@
                   $productieorder =  $_GET['medicine_id'];
                   $query2 = $connection->prepare("update medicine set medicine_qty = medicine_qty + 1 where medicine_id =$productieorder");
                   $query2->execute();
+                  $query3 = $connection->prepare("insert into supply values ($productieorder, $tc)");
+                  $query3->execute();
                   header("location: view_medicines.php");
                 }                    
           ?>   
