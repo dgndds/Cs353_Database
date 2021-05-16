@@ -18,17 +18,62 @@
       $selectedDate = $_POST['chosenDate'];
       $userTc = $_SESSION['TC'];
 
+     // INSERT INTO `heroku_115a957c1ea7ee2`.`book_appointment` (`patientTC`, `doctorTC`) VALUES ('asd', 'asd');
+
       echo 'You have chosen: ' . $selectedDoctor;
       echo 'You have chosen: ' . $selectedDate;
       echo 'Your tc: '. $userTc;
-      
-      $query = $connection->prepare("INSERT INTO time_shift (TC, shift_date, available) VALUES (?, ?, 'reserved');");
+
+       //select * from book_appointment natural join appointment where patientTC=1748594034
+
+      $query = $connection->prepare("INSERT INTO time_shift (TC, shift_date, available) VALUES (?, ?, 'reserved')");
 
       $query->execute(
         array(
           $selectedDoctor,$selectedDate
         )
       );
+
+      $query = $connection->prepare("INSERT INTO appointment (app_date) VALUES (?)");
+ 
+      $query->execute(
+         array(
+           $selectedDate
+         )
+       );
+
+     /* $query = $connection->prepare("select * from appointment where app_date=?");
+ 
+      $query->execute(
+         array(
+           $selectedDate
+         )
+       );*/
+
+      //while($appoinment = $query->fetch()){
+        //SELECT * FROM appointment,time_shift where app_date=shift_date
+        $query = $connection->prepare("SELECT * FROM appointment,time_shift where app_date=shift_date and TC=?");
+
+        $query->execute(
+          array(
+            $selectedDoctor
+          )
+        );
+
+        while($bookappoinment = $query->fetch()){
+          $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC, appointment_id) VALUES (?, ?, ?)");
+
+          $query->execute(
+            array(
+              $userTc,$selectedDoctor,$bookappoinment["appointment_id"]
+            )
+          );
+        }
+      //}
+
+      
+ 
+       //INSERT INTO `heroku_115a957c1ea7ee2`.`appointment` (`app_date`) VALUES ('ads');
     }
 
     if(isset($_SESSION["selectedDeparment"]) && isset($_SESSION["selectedMonth"])){
@@ -74,7 +119,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome <?php echo $_SESSION["userName"]?></a>
             <form class="d-flex">
-              <a href="logout.php" class="btn btn-danger" type="submit">Logout</a>
+              <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
           </div>
         </nav>
@@ -84,8 +129,13 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2">TEST RESULT HISTORY</h2>
+          <h2 class="h2">BOOK AN APPOINTMENT</h2>
         </div>
+
+        <?php
+          $query = $connection->prepare("SELECT department_name FROM departments");
+          $query->execute();
+        ?>
 
         <div class="col-12 col-md-8 mx-auto mb-4">
           <div class="row">
@@ -130,12 +180,7 @@
           </div>
         </div>
 
-        <?php
-          $query = $connection->prepare("SELECT department_name FROM departments");
-          $query->execute();
-        ?>
-
-        <?php if(isset($_POST['btnSbmt'])){?>
+        <?php if(!empty($_POST['department-name']) && !empty($_POST['month'])){?>
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <div class="col-12">
@@ -217,6 +262,9 @@
               </ul>
             </nav>
           </div>
+        </div>
+        <div class="col-12 text-center mt-3">
+          <a href="index.php" class="btn btn-danger p-2">Return</a>
         </div>
         <?php
           } catch (PDOException $err) {
