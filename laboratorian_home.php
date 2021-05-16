@@ -4,7 +4,7 @@
 
   session_start();
 
-  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "employee") ) {
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "laboratorian") ) {
     header("location:index.php");
   }
 
