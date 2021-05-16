@@ -372,6 +372,10 @@
 
               </div>
 
+              <a href="request_test.php?tc_number=<?=$_GET['tc_number']?>&appointment=<?=$_GET['appointment']?>" class="fs-4 link-primary">Request Test</a>
+
+              
+
               <h3 class="h3 text-center my-4 mb-2">Diagnose</h3>
 
               <div class="col-12 col-md-5 mx-auto">
