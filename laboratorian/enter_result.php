@@ -1,3 +1,14 @@
+<?php
+
+  require_once("../config.php");
+
+  session_start();
+
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "laboratorian") ) {
+    header("location:../index.php");
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,7 +20,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 
     <title>Hospital System</title>
 
@@ -22,9 +33,9 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Murat Kuşçu</a>
+            <a class="navbar-brand">Welcome Laboratorian Murat Kuşçu</a>
             <form class="d-flex">
-              <button class="btn btn-danger" type="submit">Logout</button>
+              <a class="btn btn-danger" href="../logout.php">Logout</a>
             </form>
           </div>
         </nav>
@@ -34,47 +45,69 @@
       <div class="row mb-4">
 
         <div class="my-4 text-center">
-          <h2 class="h2">NEW TEST</h2>
+          <h2 class="h2">ENTER TEST RESULT</h2>
         </div>
 
 
         <div class="col-5 mx-auto bg-form p-4 rounded">
 
             <div class="col-6 mx-auto">
+              <?php
+                try {
+
+                  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+                  if ( isset($_GET["name"]) && isset($_GET["test_name"]) && isset($_GET["comp_name"]) ) {
+
+              ?>
 
               <div class="row mb-3">
                 <div class="col-5">
-                  <label for="inputPassword6" class="col-form-label">Patient Name</label>
+                  <p> <b>Patient Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <input type="text" class="form-control d-inline" aria-describedby="passwordHelpInline">
+                  <p class="fs-6"> <?=$_GET["name"]?> </p>
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="col-5">
-                  <label for="inputPassword6" class="col-form-label">Test Name</label>
+                  <p> <b>Test Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <input type="text" class="form-control d-inline" aria-describedby="passwordHelpInline">
+                  <p class="fs-6"> <?=$_GET["test_name"]?> </p>
                 </div>
               </div>
 
               <div class="row mb-3">
                 <div class="col-5">
-                  <label for="inputPassword6" class="col-form-label">Test Type</label>
+                  <p> <b>Component Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <input type="text" class="form-control d-inline" aria-describedby="passwordHelpInline">
+                  <form action="enter_result.php" method="POST">
+                  <select name="selected_component" class="form-select" aria-label="Select">
+                    <option selected>Select</option>
+                    <?php
+
+                      $components = explode( " ", $_GET["comp_name"]);
+
+                      foreach ($components as $component) { ?>
+                          <option value="<?=$component?>"><?=$component?></option>
+                        <?php
+                      }
+
+                    ?>
+                  </select>
+
                 </div>
               </div>
 
               <div class="row">
                 <div class="col-5">
-                  <label for="inputPassword6" class="col-form-label">Magnesium</label>
+                  <p> <b>Value:</b> </p>
                 </div>
                 <div class="col-7">
-                  <input type="text" class="form-control d-inline" aria-describedby="passwordHelpInline">
+                  <input type="text" class="form-control d-inline" name="result_comp">
                 </div>
               </div>
             </div>
@@ -82,14 +115,24 @@
       </div>
 
       <div class="col-8 mx-auto mt-3">
-        <form class="d-flex justify-content-center">
           <button class="btn btn-danger p-2" type="submit">Register Test</button>
         </form>
+      </div>
+
+      <div class="col-12 text-center mt-3">
+        <a href="view_tests.php" class="btn btn-danger p-2">Return</a>
       </div>
 
 
     </div>
 
+    <?php
+        }
+
+      } catch (PDOException $err) {
+        echo "<h1>Cant Connect Database!</h1>";
+      }
+    ?>
 
     <!-- Optional JavaScript; choose one of the two! -->
 
