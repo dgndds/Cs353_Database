@@ -3,6 +3,8 @@
 
   session_start();
 
+  $inserted = 0;
+
   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "pharmacist") ) {
@@ -18,7 +20,13 @@
    $query2->execute();
    $query3 = $connection->prepare("insert into supply values ($productieorder, $tc)");
    $query3->execute();
-   header("location:view_medicines.php");
+
+   if ( $query2->rowCount() > 0 ) {
+     $inserted = 1;
+   }else {
+     $inserted = -1;
+   }
+
   }
 ?>
 <!doctype html>
@@ -65,22 +73,36 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="m-4 text-center">
+        <div class="my-4 text-center">
           <h2 class="h2 mb-3">MEDICINIES</h2>
+          <?php if ( $inserted == 1){ ?>
+            <div class="badge bg-success text-wrap p-2 w-50" style="width: 6rem;">
+              Successfully Added Medicine(s)!
+            </div>
+          <?php }else if($inserted == -1){ ?>
+              <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                Cannot Add Medicine(s)!
+              </div>
+            <?php
+          } ?>
         </div>
+
+        <div class="col-12 col-md-8 mx-auto mb-3 d-flex justify-content-end p-0">
+          <form action="" method="POST" class="w-50">
+            <div class="input-group mb-1">
+              <input type="number" name="look" class="form-control" placeholder="Medicine ID" style="width: 5px;">
+              <input type="submit" class="btn btn-outline-danger" value="Search">
+            </div>
+          </form>
+        </div>
+
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
-            <form action="" method="POST" style="width:50%;">
-              <div class="input-group mb-1">
-                <input type="number" name="look" class="form-control" placeholder="Medicine ID" style="width: 5px;">
-                <input type="submit" class="btn btn-primary" value="Search">
-              </div>
-            </form>
               <?php
                 if(isset($_POST['look'])){
                   $med_id = $_POST['look'];
                   $query1= $connection->prepare("select * from medicine where concat(medicine_id) like '%$med_id%'");
-                  $query1->execute();                      
+                  $query1->execute();
                   echo "
                     <form class=\"d-flex\">
                     <table class=\"table table-sm table-striped table-hover\">
@@ -113,7 +135,7 @@
                                 </form>
                             </td>
                       </tr>
-                  <?php }; 
+                  <?php };
                     echo "</tbody>
                           </table>
                           </form>";
@@ -130,7 +152,7 @@
                 }
                 else{
                   $query1= $connection->prepare("select * from medicine");
-                  $query1->execute();                      
+                  $query1->execute();
                   echo "
                     <form class=\"d-flex\">
                     <table class=\"table table-sm table-striped table-hover\">
@@ -163,12 +185,12 @@
                                 </form>
                             </td>
                       </tr>
-                  <?php }; 
+                  <?php };
                     echo "</tbody>
                           </table>
                           </form>";
                   }
-                } 
+                }
                 ?>
           </div>
         </div>

@@ -58,20 +58,20 @@
                       $tc = $_SESSION["TC"];
 
                       $query = $connection->prepare("
-                      Select * 
-                      FROM appointment, user JOIN patient ON user.TC=patient.TC 
+                      Select *
+                      FROM appointment, user JOIN patient ON user.TC=patient.TC
                       where (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=?)
                       and patient.TC=? and appointment_id=? ORDER BY app_date DESC;"
                       );
 
-                      
+
 
                       $query->execute(
                         array(
                            $_GET['tc_number'],$tc,$_GET['appointment'] //CHANGE TO DOCTOR TC
                          )
                       );
-                      
+
 
                       if ( $query->rowCount() > 0 ){
 
@@ -127,7 +127,13 @@
                 <?=$data["email"]?>
               </p>
             </div>
-            
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Blood Type: </b>
+                <?=$data["blood_type"]?>
+              </p>
+            </div>
+
 
             <div class="col-12">
 
@@ -136,7 +142,7 @@
               -->
 
               <h3 class="h3 text-center mb-2">Symptoms</h3>
-              
+
               <div class="col-12 col-md-6 mx-auto mt-4">
                 <p class="fs-4">
                   Showing:
@@ -215,6 +221,52 @@
                 </p>
             </div>
 
+            <div class="my-4">
+              <p class="fs-4"> <b>Prescribed Medicine(s)</b> </p>
+            </div>
+
+            <table class="table table-sm table-striped table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Medicine Name</th>
+                  <th scope="col">Medicine Type</th>
+                  <th scope="col">Usage Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+
+                    $query = $connection->prepare("
+                    SELECT medicine_name, type, usage_description
+                    FROM prescribe JOIN medicine ON prescribe.medicine_id=medicine.medicine_id
+                    WHERE appointment_id=?
+                    ;");
+
+                    $query->execute(
+                      array(
+                        $_GET["appointment"]
+                      )
+                    );
+
+                    $counter = 1;
+                    while ( $data = $query->fetch() ) {
+
+                      ?>
+
+                      <tr>
+                        <th scope="row"><?=$counter++?></th>
+                        <td><?=$data["medicine_name"]?></td>
+                        <td><?=$data["type"]?></td>
+                        <td><?=$data["usage_description"]?></td>
+                      </tr>
+
+                      <?php } ?>
+
+
+              </tbody>
+            </table>
+
             <?php
           }
 
@@ -225,13 +277,10 @@
           </div>
         </div>
 
-
-        <div class="col-12 text-center my-3">
-          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
-        </div>
-
       </div>
-
+      <div class="col-12 text-center my-3">
+        <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
+      </div>
 
     </div>
 

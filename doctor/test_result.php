@@ -75,8 +75,8 @@
                   <th scope="col">#</th>
                   <th scope="col">Patient Name</th>
                   <th scope="col">Laboratorian Name</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Test Type</th>
+                  <th scope="col">Components</th>
+                  <th scope="col">Status</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>

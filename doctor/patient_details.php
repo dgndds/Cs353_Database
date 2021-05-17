@@ -312,7 +312,7 @@
             </table>
 
             <div class="my-4">
-              <p class="fs-4"> <b>Last Prescribed Medicine(s)</b> </p>
+              <p class="fs-4"> <b>Prescribed Medicine(s)</b> </p>
             </div>
 
             <table class="table table-sm table-striped table-hover">
