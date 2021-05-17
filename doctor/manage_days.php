@@ -156,10 +156,10 @@
                           $day_name = date('l', strtotime($today));
                           $day = $today;
 
-                          $flag = 0;
+                          $flag = 1;
                           $counter = 0;
 
-                          for ($i=0; $i < 4; $i++) {
+                          for ($i=0; $i < 5; $i++) {
 
                            ?>
 
@@ -167,21 +167,17 @@
 
                               <?php
 
-                                $days = array("Monday"=>"0", "Tuesday"=>"1", "Wednesday"=>"2", "Thursday"=>"3", "Friday"=>"4", "Saturday"=>"5", "Sunday"=>"6");
+                                $days = array("Sunday"=>"6", "Monday"=>"0", "Tuesday"=>"1", "Wednesday"=>"2", "Thursday"=>"3", "Friday"=>"4", "Saturday"=>"5");
 
                                 foreach($days as $key => $value) {
 
-                                  if ( $key == $day_name ) {
-                                    $flag = 1;
-                                  }
+
                                     if ( !$flag ) {
                                       $day =  substr($today, 0, 8) . (((int)substr($today, 8, 2)) + $counter - (int)$days[date('l', strtotime($today))]);
                                       ?>
                                       <td><?=$day?> &nbsp;<a href="#" class="btn btn-danger disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a></td>
                                     <?php
                                     }else {
-                                      $day = increaseDay($day);
-
                                         if ( array_key_exists( $day, $times ) ) {
                                           if ( $times[$day] == "cancel" ) { ?>
                                               <td><?=$day?> &nbsp;<a href="manage_days.php?change=cancel&day=<?=$day?>" class="btn btn-danger" style="width:25px;height:25px;"></a></td>
@@ -196,8 +192,7 @@
                                           <?php
                                         }
 
-
-
+                                        $day = increaseDay($day);
 
                                     }
 
