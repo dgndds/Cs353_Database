@@ -33,24 +33,16 @@
            $selectedDate
          )
        );
+      
+       $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC) VALUES (?, ?)");
 
-        $query = $connection->prepare("SELECT * FROM appointment,time_shift where app_date=shift_date and app_date=? and TC=?");
-
-        $query->execute(
-          array(
-            $selectedDate,$selectedDoctor
+          
+       $query->execute(
+            
+        array(
+            $userTc,$selectedDoctor
           )
         );
-
-        while($bookappoinment = $query->fetch()){
-          $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC, appointment_id) VALUES (?, ?, ?)");
-
-          $query->execute(
-            array(
-              $userTc,$selectedDoctor,$bookappoinment["appointment_id"]
-            )
-          );
-        }
     }
 
     if(isset($_SESSION["selectedDeparment"]) && isset($_SESSION["selectedMonth"])){
