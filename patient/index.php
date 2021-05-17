@@ -42,7 +42,7 @@
           
               $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
           
-              $query = $connection->prepare("SELECT first_name,last_name FROM user where TC=?");
+              $query = $connection->prepare("CALL GetUserNameByTc(?);");
             
               $query->execute(
                 array(
