@@ -43,7 +43,6 @@
         );
 
         while($bookappoinment = $query->fetch()){
-          echo "bookappointment date: ".$bookappoinment["appointment_id"];
           $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC, appointment_id) VALUES (?, ?, ?)");
 
           $query->execute(
