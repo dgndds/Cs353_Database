@@ -183,8 +183,6 @@
                    $index = 1;
                    while($data = $doctors->fetch()){
                      for($i = 1; $i <= 30; $i++){
-                      //If size is greater than zero than that date is reserved
-                      //SELECT * FROM time_shift where '2021-05-19' in (select shift_date from time_shift) and shift_date='2021-05-19';
                       $i_padded = sprintf("%02d", $i);
                       $monthPadded = sprintf("%02d", $selectedMonth);
                       $date = "2021-" . $monthPadded ."-". $i_padded;
@@ -218,26 +216,6 @@
           </div>
         </div>
         <?php }?>
-
-        <div class="col-12">
-          <div class="mx-auto px-100 my-3">
-            <nav aria-label="...">
-              <ul class="pagination">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item active" aria-current="page">
-                  <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#">Next</a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
         <div class="col-12 text-center mt-3">
           <a href="index.php" class="btn btn-danger p-2">Return</a>
         </div>
@@ -246,13 +224,8 @@
             echo "<h1>Cant Connect Database!</h1>";
           }
         ?>
-
-
       </div>
-
-
     </div>
-
 
     <!-- Optional JavaScript; choose one of the two! -->
 
