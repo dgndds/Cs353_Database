@@ -1,3 +1,47 @@
+<?php
+  require_once("config.php");
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+  $finished = 0;
+  if (isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['phone'])
+  && isset($_POST['tc_id']) && isset($_POST['email']) && isset($_POST['bdate']) && isset($_POST['pass']) 
+  && isset($_POST['gender']) && isset($_POST['btype']) && isset($_POST['height']) && isset($_POST['weight']))  {
+    $tc_id = $_POST['tc_id'];
+    $fname = $_POST['first_name'];
+    $lname = $_POST['last_name'];
+    $phone = $_POST['phone'];
+    $gender = $_POST['gender'];
+    $email = $_POST['email'];
+    $bdate = $_POST['bdate'];
+    $pass = $_POST['pass'];
+    $blood = $_POST['btype'];
+    $height = $_POST['height'];
+    $weight = $_POST['weight'];
+    $query3 = $connection->prepare("insert into user values (?,?,?,?,?,?,?,?)");
+    $query3->execute(
+      array(
+        $tc_id, $pass, $fname, $lname, $email, $gender, $bdate, $phone
+      )
+    );
+    if($query3->rowCount() == 0){
+      $finished = -1;
+    }
+    $query4 = $connection->prepare("insert into patient (`TC`, `height`, `weight`, `blood_type`) VALUES (?, ?, ?, ?)");
+    $query4->execute(
+      array(
+        $tc_id, $height, $weight, $blood
+      )
+    );
+    if($finished != -1){
+      if($query4->rowCount() == 0){
+        $finished = -1;
+      }
+      else{
+        $finished = 1;
+      }
+    }
+  }
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -23,16 +67,29 @@
 
         <div class="my-4 text-center">
           <h2 class="h2">HOSPITAL DATA MANAGEMENT SYSTEM</h2>
+            <?php 
+            if($finished == 1){ ?>
+                <div class="badge bg-success text-wrap p-2 w-50" style="width: 6rem;">
+                  Account Created Successfully!
+                </div>
+            <?php }
+            else if($finished == -1){ ?>
+              <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                    Account Creation Failed!
+              </div>
+            <?php } ?>
         </div>
+        
+            
 
         <div class="col-12 col-md-5 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
 
             <div class="col-12 text-left">
-              <form class="row g-3 needs-validation" novalidate>
+              <form class="row g-3 needs-validation" novalidate method="POST"> 
                 <div class="col-md-6">
                   <label for="validationCustom01" class="form-label">First name</label>
-                  <input type="text" class="form-control" id="validationCustom01" required>
+                  <input type="text" name="first_name" class="form-control" id="validationCustom01" required>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
@@ -42,7 +99,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom02" class="form-label">Last name</label>
-                  <input type="text" class="form-control" id="validationCustom02" required>
+                  <input type="text" name="last_name" class="form-control" id="validationCustom02" required>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
@@ -52,7 +109,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom02" class="form-label">TC</label>
-                  <input type="text" class="form-control" id="validationCustom02" required>
+                  <input type="number" min="0" name="tc_id" class="form-control" id="validationCustom02" required>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
@@ -62,7 +119,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom02" class="form-label">Email</label>
-                  <input type="text" class="form-control" id="validationCustom02" required>
+                  <input type="email" name="email" class="form-control" id="validationCustom02" required>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
@@ -72,7 +129,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Password</label>
-                  <input type="password" class="form-control" id="validationCustom05" required>
+                  <input type="password" name="pass" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a password.
                   </div>
@@ -82,9 +139,9 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Phone Number</label>
-                  <input type="text" class="form-control" id="validationCustom05" required>
+                  <input type="text" name="phone" class="form-control" id="validationCustom05" pattern="[0]{1}[0-9]{10}" required>
                   <div class="invalid-feedback">
-                    Please provide a phone number.
+                    Please provide a phone number starting with 0 and Max 11 Num.
                   </div>
                   <div class="valid-feedback">
                     Looks good!
@@ -92,7 +149,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Birtdate</label>
-                  <input type="text" class="form-control" id="validationCustom05" required>
+                  <input type="date" name="bdate" max="2021-05-16" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a birtdate.
                   </div>
@@ -102,7 +159,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom04" class="form-label">Gender</label>
-                  <select class="form-select" id="validationCustom04" required>
+                  <select class="form-select" name="gender" id="validationCustom04" required>
                     <option selected disabled value="">Choose...</option>
                     <option>Male</option>
                     <option>Female</option>
@@ -115,23 +172,37 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label for="validationCustom05" class="form-label">Height</label>
-                  <input type="text" class="form-control" id="validationCustom05" required>
+                <label for="validationCustom04" class="form-label">Blood Type</label>
+                  <select class="form-select" name="btype" id="validationCustom04" required>
+                    <option selected disabled value="">Choose...</option>
+                    <option>A+</option>
+                    <option>A-</option>
+                    <option>B+</option>
+                    <option>B-</option>
+                    <option>AB+</option>
+                    <option>AB-</option>
+                    <option>O+</option>
+                    <option>O-</option>
+                  </select>
                   <div class="invalid-feedback">
-                    Please provide a height.
+                    Please identify your blood type.
                   </div>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
                 </div>
                 <div class="col-md-6">
+                  <label for="validationCustom05" class="form-label">Height</label>
+                  <input type="number" name="height" min="0" class="form-control" id="validationCustom05" required>
+                  <div class="invalid-feedback">
+                    Please provide a height.
+                  </div>
+                </div>
+                <div class="col-md-6">
                   <label for="validationCustom05" class="form-label">Weight</label>
-                  <input type="text" class="form-control" id="validationCustom05" required>
+                  <input type="number" name="weight" min="0" class="form-control" id="validationCustom05" required>
                   <div class="invalid-feedback">
                     Please provide a weight.
-                  </div>
-                  <div class="valid-feedback">
-                    Looks good!
                   </div>
                 </div>
                 <div class="col-12">
