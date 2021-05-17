@@ -57,7 +57,7 @@
 
                   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                  if ( isset($_GET["appointment"]) ) {
+                  if ( isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true" ) {
 
                     $query = $connection->prepare("
                     SELECT * FROM result WHERE test_id=?"
@@ -137,6 +137,8 @@
     </div>
 
     <?php
+  }else if( 0 ){
+
   }else {
     header("location:view_tests.php");
   }

@@ -96,14 +96,14 @@
                         <td><?=$data["test_name"]?></td>
                         <td><?=$data["components"]?></td>
                         <?php
-                          if ( $inner_query->rowCount() == str_word_count( $data["components"])) { ?>
+                          if ( $inner_query->rowCount() == str_word_count( $data["components"])) {
+                            $finished = 1;?>
                             <td>Finished &nbsp;&nbsp; <a href="#" class="btn btn-success" style="width:25px;height:25px;"></a></td>
                             <?php
                           }else if ( $inner_query->rowCount() == 0){ ?>
                             <td>Assigned &nbsp;&nbsp; <a href="#" class="btn btn-danger" style="width:25px;height:25px;"></a></td>
                             <?php
                           }else if ( $inner_query->rowCount() > 0 ){
-                            $finished = 1;
                             ?>
                             <td>Preparing &nbsp;&nbsp; <a href="#" class="btn btn-warning" style="width:25px;height:25px;"></a></td>
                             <?php
@@ -124,7 +124,7 @@
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
                           if ( $finished ) { ?>
-                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>">View</a></td>
+                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>&finished=true">View</a></td>
                             <?php
                           }else{ ?>
 

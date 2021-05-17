@@ -16,6 +16,8 @@
     }
   }
 
+  $incorrect_login = False;
+
   try {
 
     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
