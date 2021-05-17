@@ -142,7 +142,7 @@
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
                           if ( $finished ) { ?>
-                            <td><a href="view_result.php?appointment=<?=$data["appointment_id"]?>">View</a></td>
+                            <td><a href="view_result.php?patient_name=<?=($data["first_name"] . " " . $data["last_name"])?>&patient_tc=<?=$data["patientTC"]?>&test_id=<?=$data["test_id"]?>">View</a></td>
                             <?php
                           }else{ ?>
 
