@@ -18,14 +18,6 @@
       $selectedDate = $_POST['chosenDate'];
       $userTc = $_SESSION['TC'];
 
-     // INSERT INTO `heroku_115a957c1ea7ee2`.`book_appointment` (`patientTC`, `doctorTC`) VALUES ('asd', 'asd');
-
-      echo 'You have chosen: ' . $selectedDoctor;
-      echo 'You have chosen: ' . $selectedDate;
-      echo 'Your tc: '. $userTc;
-
-       //select * from book_appointment natural join appointment where patientTC=1748594034
-
       $query = $connection->prepare("INSERT INTO time_shift (TC, shift_date, available) VALUES (?, ?, 'reserved')");
 
       $query->execute(
@@ -42,16 +34,6 @@
          )
        );
 
-     /* $query = $connection->prepare("select * from appointment where app_date=?");
- 
-      $query->execute(
-         array(
-           $selectedDate
-         )
-       );*/
-
-      //while($appoinment = $query->fetch()){
-        //SELECT * FROM appointment,time_shift where app_date=shift_date
         $query = $connection->prepare("SELECT * FROM appointment,time_shift where app_date=shift_date and app_date=? and TC=?");
 
         $query->execute(
@@ -70,11 +52,6 @@
             )
           );
         }
-      //}
-
-      
- 
-       //INSERT INTO `heroku_115a957c1ea7ee2`.`appointment` (`app_date`) VALUES ('ads');
     }
 
     if(isset($_SESSION["selectedDeparment"]) && isset($_SESSION["selectedMonth"])){
@@ -88,9 +65,6 @@
       $selectedMonth = $_POST['month'];
       $_SESSION["selectedDeparment"] =$selectedDepartment;
       $_SESSION["selectedMonth"] = $selectedMonth;
-
-      echo 'You have chosen: ' . $selectedDepartment;
-      echo 'You have chosen: ' . $selectedMonth;
     }
 ?>
 
