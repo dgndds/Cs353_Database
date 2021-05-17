@@ -57,11 +57,17 @@
 
                   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                  if ( isset($_GET["appointment"]) ) {
-
+                  if (isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true") {
               ?>
-
-              <div class="row mb-3">
+              <div>
+                    <?php
+                      echo $_GET["appointment"];
+                    ?>
+              </div>
+    <?php
+  }else if( isset($_GET["appointment"]) ){
+    ?>
+    <div class="row mb-3">
                 <div class="col-5">
                   <p> <b>Patient Name:</b> </p>
                 </div>
@@ -85,30 +91,29 @@
                 </div>
                 <div class="col-7">
                   <form action="enter_result.php" method="POST">
-
+                  <select class="form-select w-50" aria-label="Select" id="component">
+                  <option selected>Select</option>
                     <?php
+                            
+                          $query = $connection->prepare("
+                          SELECT components FROM request_test WHERE test_id=? and appointment_id=?;"
+                          );
 
-                      $query = $connection->prepare("
-                        SELECT companent_name FROM result WHERE test_id=? and appointment_id=? and laboratorian\.TC=?"
-                      );
+                          $query->execute(
+                          array(
+                            $_GET["test_id"], $_GET["appointment"]
+                          )
+                          );
 
-                      $query->execute(
-                        array(
-                          $_GET["test_id"], $_GET["appointment"], $_SESSION["TC"]
-                        )
-                      );
+                    while ( $data = $query->fetch() ) { 
+                        echo "HELOOOOOOOOOOOOOO";
+                      ?>
+                      <option value="<?=$data["components"]?>"><?=$data["components"]?></option>
+                    <?php
+                    }
 
-                      while ( $data = $query->fetch() ) {
-                        echo $data["companent_name"];
-                      }
-
-                    ?>
-
-
-                  <select name="selected_component" class="form-select" aria-label="Select">
-                    <option selected>Select</option>
-
-                          <option value="1">1</option>
+                  ?>
+                                     
                   </select>
 
                 </div>
@@ -135,14 +140,9 @@
         <a href="view_tests.php" class="btn btn-danger p-2">Return</a>
       </div>
 
-
+                      
     </div>
-
-    <?php
-  }else if( isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true" ){
-
-
-
+<?php
   }else {
     header("location:view_tests.php");
   }
