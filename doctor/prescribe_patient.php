@@ -4,6 +4,8 @@
 
   session_start();
 
+  $inserted = 0;
+
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
     header("location:../index.php");
   }
@@ -18,6 +20,13 @@
     $query->execute(array(
       $_POST['treat_name'], $_POST['med_id'], $app, $_POST['usage'], 0
     ));
+
+    if ( $query->rowCount() > 0 ) {
+      $inserted = 1;
+    }else {
+      $inserted = -1;
+    }
+
   }
 
 ?>
@@ -71,10 +80,21 @@
 
       <!-- Prescribe Patient -->
       <div class="row mb-4">
-
         <div class="my-4 text-center">
           <h2 class="h2">PRESCRIBE PATIENT</h2>
+          <?php if ( $inserted == 1 ){ ?>
+            <div class="badge bg-success text-wrap p-2 w-50" style="width: 6rem;">
+              Successfully Added Prescription!
+            </div>
+          <?php
+        }else if($inserted == -1){ ?>
+              <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                Cannot Add Prescription!
+              </div>
+            <?php
+          } ?>
         </div>
+
         <div class="col-8 mx-auto bg-form p-4 rounded">
           <form class="row g-3" method="POST">
             <div class="col-md-10">

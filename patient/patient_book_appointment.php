@@ -1,10 +1,12 @@
 <?php
   require_once("../config.php");
   session_start();
-  
+
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
     header("location:../index.php");
   }
+
+  $inserted = 0;
 
   try{
     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
@@ -12,7 +14,7 @@
     $query = $connection->prepare("SELECT department_name FROM departments");
 
     $query->execute();
-    
+
     if(isset($_POST['doctorId']) && isset($_POST['chosenDate'])){
       $selectedDoctor = $_POST['doctorId'];
       $selectedDate = $_POST['chosenDate'];
@@ -27,29 +29,37 @@
       );
 
       $query = $connection->prepare("INSERT INTO appointment (app_date) VALUES (?)");
- 
+
       $query->execute(
          array(
            $selectedDate
          )
        );
-      
+
        $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC) VALUES (?, ?)");
 
-          
+
        $query->execute(
-            
+
         array(
             $userTc,$selectedDoctor
           )
         );
+
+        if ( $query->rowCount() > 0 ) {
+          $inserted = 1;
+        }else {
+          $inserted = -1;
+        }
+
+
     }
 
     if(isset($_SESSION["selectedDeparment"]) && isset($_SESSION["selectedMonth"])){
       $selectedDepartment= $_SESSION["selectedDeparment"];
-      $selectedMonth = $_SESSION["selectedMonth"]; 
+      $selectedMonth = $_SESSION["selectedMonth"];
     }
-    
+
 
     if(!empty($_POST['department-name']) && !empty($_POST['month'])) {
       $selectedDepartment = $_POST['department-name'];
@@ -96,7 +106,19 @@
 
         <div class="m-4 text-center">
           <h2 class="h2">BOOK AN APPOINTMENT</h2>
+          <?php if ( $inserted == 1){ ?>
+            <div class="badge bg-success text-wrap p-2 w-50" style="width: 6rem;">
+              Successfully Booked!
+            </div>
+          <?php }else if($inserted == -1){ ?>
+              <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                Cannot Book Appointment!
+              </div>
+            <?php
+          } ?>
         </div>
+
+
 
         <?php
           $query = $connection->prepare("SELECT department_name FROM departments");
@@ -106,7 +128,7 @@
         <div class="col-12 col-md-8 mx-auto mb-4">
           <div class="row">
             <div class="col-12 col-md-4 mb-3 text-center">
-              <div class="dropdown col-12 col-md-6">
+              <div class="dropdown col-12 col-md-6 mx-auto">
                 <p class="d-inline" style="font-size:1.3rem;"><b>Month: </b></p>
                 <form action="patient_book_appointment.php" method="post">
                   <select name="month" class="form-select">
@@ -127,26 +149,25 @@
               </div>
             </div>
             <div class="col-12 col-md-4 mb-3 text-center">
-              <div class="dropdown col-12 col-md-6">
+              <div class="dropdown col-12 col-md-6 mx-auto">
                 <p class="d-inline" style="font-size:1.3rem;"><b>Department: </b></p>
                   <select name="department-name" class="form-select">
                       <option value="" disabled selected>Choose option</option>
                       <?php
                         while($data = $query->fetch()){?>
                           <option value="<?=$data["department_name"]?>"><?=$data["department_name"]?></option>
-                          <?php } 
+                          <?php }
                       ?>
                   </select>
               </div>
             </div>
-            <div class="col-12 col-md-4">
-                <input class="btn btn-danger" type="submit" value="Search" name="btnSbmt">
+            <div class="col-12 col-md-4 d-flex justify-content-center">
+                <input class="btn btn-danger" type="submit" value="Search" name="btnSbmt" style="height: 3rem;margin-top: 1.2rem;">
               </form>
             </div>
           </div>
         </div>
 
-        <?php if(!empty($_POST['department-name']) && !empty($_POST['month'])){?>
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <div class="col-12">
@@ -161,7 +182,7 @@
                 </thead>
                 <tbody>
                 <?php
-
+                  if(!empty($_POST['department-name']) && !empty($_POST['month'])){
                    $query = $connection->prepare("SELECT TC,first_name,last_name from doctor natural join user where TC in (select TC from  departments natural join works_in where department_name=? )");
 
                    $query->execute(
@@ -177,15 +198,15 @@
                       $i_padded = sprintf("%02d", $i);
                       $monthPadded = sprintf("%02d", $selectedMonth);
                       $date = "2021-" . $monthPadded ."-". $i_padded;
-  
+
                       $query = $connection->prepare("SELECT * FROM time_shift where ? in (select shift_date from time_shift) and shift_date=? and TC=?");
-  
+
                       $query->execute(
                         array(
                           $date,$date,$data["TC"]
                         )
                       );
-                      
+
                       if ($query->rowCount() == 0 && date("Y-m-d") <= $date){
                         $dateToShow = $i."-".$selectedMonth."-2021";
                         echo "<form action=\"patient_book_appointment.php\" method=\"post\">";
@@ -200,16 +221,19 @@
                       }
                     }
                    }
+                 }
                 ?>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        <?php }?>
+
         <div class="col-12 text-center mt-3">
           <a href="index.php" class="btn btn-danger p-2">Return</a>
         </div>
+
+
         <?php
           } catch (PDOException $err) {
             echo "<h1>Cant Connect Database!</h1>";

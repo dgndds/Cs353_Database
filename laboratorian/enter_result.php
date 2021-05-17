@@ -4,6 +4,8 @@
 
   session_start();
 
+  $inserted = 0;
+
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "laboratorian") ) {
     header("location:../index.php");
   }
@@ -28,12 +30,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Laboratorian Murat Kuşçu</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Laboratorian <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a class="btn btn-danger" href="../logout.php">Logout</a>
             </form>
@@ -53,10 +74,6 @@
 
             <div class="col-6 mx-auto">
               <?php
-                try {
-
-                  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
-
                   $inserted = 0;
 
                   if ( $_POST["compToBeEntered"] ) {
@@ -75,6 +92,8 @@
 
                     if ( $query->rowCount() > 0 ) {
                       $inserted = 1;
+                    }else {
+                      $inserted = -1;
                     }
 
                   }
@@ -129,7 +148,9 @@
 
                     while ( $data = $query->fetch() ) {
 
-                      $compos = explode(" ", $data["components"]);
+                      $word_count = str_word_count($data["components"]);
+
+                      $compos = explode(" ", $data["components"], $word_count);
 
                       foreach ($compos as $key) {
                         if ( $key != " " ) {?>
@@ -154,12 +175,12 @@
                   <p> <b>Value:</b> </p>
                 </div>
                 <div class="col-7">
-                  <input type="text" class="form-control d-inline" name="result_comp">
+                  <input type="number" min="0" class="form-control d-inline" name="result_comp">
                 </div>
               </div>
             </div>
 
-            <?php if ( $inserted ) {?>
+            <?php if ( $inserted == 1) {?>
 
             <div class="row">
               <div class="col-12 col-md-5 mx-auto d-flex justify-content-center mt-3">
@@ -169,7 +190,18 @@
               </div>
             </div>
 
-            <?php } ?>
+          <?php }else if($inserted == -1){ ?>
+
+            <div class="row">
+              <div class="col-12 col-md-5 mx-auto d-flex justify-content-center mt-3">
+                <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                  Cannot Be Added!
+                </div>
+              </div>
+            </div>
+
+            <?php
+          } ?>
 
       </div>
 

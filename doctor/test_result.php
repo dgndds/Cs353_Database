@@ -101,12 +101,12 @@
                       $finished = 0;
 
                       $inner_query = $connection->prepare("
-                      SELECT * FROM result WHERE test_id=?"
+                      SELECT * FROM result WHERE test_id=? and appointment_id=?"
                       );
 
                       $inner_query->execute(
                         array(
-                          $data["test_id"]
+                          $data["test_id"], $data['appointment_id']
                         )
                       );
 
@@ -146,7 +146,7 @@
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
                           if ( $finished ) { ?>
-                            <td><a href="view_result.php?patient_name=<?=($data["first_name"] . " " . $data["last_name"])?>&patient_tc=<?=$data["patientTC"]?>&test_id=<?=$data["test_id"]?>">View</a></td>
+                            <td><a href="view_result.php?patient_name=<?=($data["first_name"] . " " . $data["last_name"])?>&patient_tc=<?=$data["patientTC"]?>&test_id=<?=$data["test_id"]?>&appointment=<?=$_GET["appointment"]?>">View</a></td>
                             <?php
                           }else{ ?>
 

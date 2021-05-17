@@ -56,19 +56,19 @@
                       $tc = $_SESSION["TC"];
 
                       $query = $connection->prepare("
-                      select * 
+                      select *
                       from user,(
                       SELECT *
-                      FROM book_appointment natural join result natural join appointment natural join test) AS T 
+                      FROM book_appointment natural join result natural join appointment natural join test) AS T
                       where `laboratorian.TC` = TC and patientTC=? and test_id=?"
                       );
-                      
+
                       $query->execute(
                         array(
-                          $tc,$_GET['test_id'] 
+                          $tc,$_GET['test_id']
                          )
                       );
-                      
+
 
                       if ( $query->rowCount() > 0 ){
 
@@ -95,10 +95,10 @@
             <div class="col-12 col-md-6">
               <p>
                 <b>Test Name: </b>
-                <?=$data["test_name"]?> 
+                <?=$data["test_name"]?>
               </p>
             </div>
-            
+
             <div class="col-12">
 
               <!--
@@ -106,27 +106,26 @@
               -->
 
               <h3 class="h3 text-center mb-2">COMPONENT RESULTS</h3>
-              
+
               <div class="col-12">
                 <p>
                   <?php
 
                   $query = $connection->prepare("
-                  select * 
-                  from user,component,(
-                  SELECT *
-                  FROM book_appointment natural join result natural join appointment natural join test ) AS T 
-                  where `laboratorian.TC` = TC and patientTC=? and companent_name=? and T.companent_name = component_name"
+                  select *
+                  from user,component,(SELECT *
+                                    FROM book_appointment natural join result natural join appointment natural join test ) AS T
+                                    where `laboratorian.TC` = user.TC and patientTC=? and component.component_name=? and T.component_name = component.component_name;"
                   );
 
                   $query->execute(
                     array(
-                      $tc,$_GET['companent_name'] 
+                      $tc,$_GET['component_name']
                     )
                   );
 
                   while($data = $query->fetch()){ ?>
-                    <b><?=$data["companent_name"]." ".$data["score"]." "."Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
+                    <b><?=$data["component_name"]." ".$data["score"]." "." - Interval: Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
                     <?php
                   }
                   ?>
