@@ -57,6 +57,28 @@
 
                   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
+                  $inserted = 0;
+
+                  if ( $_POST["compToBeEntered"] ) {
+                    $result_comp = $_POST["result_comp"];
+                    $compToBeEntered = $_POST["compToBeEntered"];
+
+                    $query = $connection->prepare("
+                    INSERT INTO result (test_id, component_name, appointment_id, `laboratorian.TC`, score) VALUES (?, ?, ?, ?, ?);"
+                    );
+
+                    $query->execute(
+                      array(
+                        $_GET["test_id"], $compToBeEntered, $_GET["appointment"], $_SESSION["TC"], $result_comp
+                      )
+                    );
+
+                    if ( $query->rowCount() > 0 ) {
+                      $inserted = 1;
+                    }
+
+                  }
+
                   if (isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true") {
               ?>
               <div>
@@ -90,11 +112,11 @@
                   <p> <b>Component Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <form action="enter_result.php" method="POST">
-                  <select class="form-select w-50" aria-label="Select" id="component">
+                  <form action="enter_result.php?appointment=<?=$_GET["appointment"]?>&comps=<?=$_GET["comps"]?>&name=<?=$_GET["name"]?>&type=<?=$_GET["type"]?>&test_id=<?=$_GET["test_id"]?>" method="POST">
+                  <select name="compToBeEntered" class="form-select w-75" aria-label="Select" id="component">
                   <option selected>Select</option>
                     <?php
-                            
+
                           $query = $connection->prepare("
                           SELECT components FROM request_test WHERE test_id=? and appointment_id=?;"
                           );
@@ -105,15 +127,23 @@
                           )
                           );
 
-                    while ( $data = $query->fetch() ) { 
-                        echo "HELOOOOOOOOOOOOOO";
-                      ?>
-                      <option value="<?=$data["components"]?>"><?=$data["components"]?></option>
-                    <?php
+                    while ( $data = $query->fetch() ) {
+
+                      $compos = explode(" ", $data["components"]);
+
+                      foreach ($compos as $key) {
+                        if ( $key != " " ) {?>
+
+                          <option value="<?=$key?>"><?=$key?></option>
+
+                          <?php
+                        }
+                      }
+
                     }
 
                   ?>
-                                     
+
                   </select>
 
                 </div>
@@ -128,11 +158,23 @@
                 </div>
               </div>
             </div>
-          </form>
+
+            <?php if ( $inserted ) {?>
+
+            <div class="row">
+              <div class="col-12 col-md-5 mx-auto d-flex justify-content-center mt-3">
+                <div class="badge bg-success text-wrap p-2 w-50" style="width: 6rem;">
+                  Successfully Added!
+                </div>
+              </div>
+            </div>
+
+            <?php } ?>
+
       </div>
 
-      <div class="col-8 mx-auto mt-3">
-          <button class="btn btn-danger p-2" type="submit">Register Test</button>
+      <div class="col-8 mx-auto mt-3 d-flex justify-content-center">
+          <input class="btn btn-danger p-2" type="submit" value="Register Test!">
         </form>
       </div>
 
@@ -140,7 +182,7 @@
         <a href="view_tests.php" class="btn btn-danger p-2">Return</a>
       </div>
 
-                      
+
     </div>
 <?php
   }else {

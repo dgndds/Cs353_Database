@@ -131,14 +131,10 @@
                   <td><?=$name?></td>
                   <?php
 
-                  if ( $finished ) { ?>
-                    <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>&finished=true">View</a></td>
-                    <?php
-                  }else{ ?>
-
+                  if ( !$finished ) { ?>
                     <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>&comps=<?=$data["components"]?>&name=<?=$name?>&type=<?=$data["test_name"]?>&test_id=<?=$data["test_id"]?>">Add</a></td>
-
-                <?php } ?>
+                    <?php
+                  } ?>
 
               </tr>
 
