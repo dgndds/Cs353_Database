@@ -57,25 +57,7 @@
 
                   $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                  if ( isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true" ) {
-
-                    $query = $connection->prepare("
-                    SELECT * FROM result WHERE test_id=?"
-                    );
-
-                    $query->execute(
-                      array(
-                        $_GET["appointment"]
-                      )
-                    );
-
-                    if ( $query->rowCount() > 0 ) {
-
-                      while( $data = $query->fecth() ){
-                        //echo $data["last_name"];
-                      }
-
-                    }
+                  if ( isset($_GET["appointment"]) ) {
 
               ?>
 
@@ -84,7 +66,7 @@
                   <p> <b>Patient Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <p class="fs-6">  </p>
+                  <p class="fs-6"> <?=$_GET["name"]?> </p>
                 </div>
               </div>
 
@@ -93,7 +75,7 @@
                   <p> <b>Test Name:</b> </p>
                 </div>
                 <div class="col-7">
-                  <p class="fs-6"> </p>
+                  <p class="fs-6"> <?=$_GET["type"]?> </p>
                 </div>
               </div>
 
@@ -137,7 +119,9 @@
     </div>
 
     <?php
-  }else if( 0 ){
+  }else if( isset($_GET["appointment"]) && isset($_GET["finished"]) && $_GET["finished"] == "true" ){
+
+
 
   }else {
     header("location:view_tests.php");

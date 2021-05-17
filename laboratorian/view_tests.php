@@ -56,8 +56,10 @@
                   <th scope="col">#</th>
                   <th scope="col">Doctor Name</th>
                   <th scope="col">Test Type</th>
+                  <th scope="col">Date</th>
                   <th scope="col">Components</th>
                   <th scope="col">Status</th>
+                  <th scope="col">Patient Name</th>
                   <th scope="col">Add Result</th>
                 </tr>
               </thead>
@@ -68,9 +70,10 @@
                     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                     $query = $connection->prepare("
-                    SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id
-                    FROM
-                    ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=doctorTC) JOIN test ON test.test_id=request_test.test_id;");
+                    SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id, appointment.app_date
+FROM
+((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=doctorTC) JOIN test ON test.test_id=request_test.test_id, appointment
+Where appointment.appointment_id=request_test.appointment_id;");
 
                     $query->execute();
 
@@ -94,6 +97,7 @@
                         <th scope="row"><?=$counter++?></th>
                         <td><?=($data["first_name"] . " " . $data["last_name"])?></td>
                         <td><?=$data["test_name"]?></td>
+                        <td><?=$data["app_date"]?></td>
                         <td><?=$data["components"]?></td>
                         <?php
                           if ( $inner_query->rowCount() == str_word_count( $data["components"])) {
@@ -123,12 +127,16 @@
 
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
+                          ?>
+                          <td><?=$name?></td>
+                          <?php
+
                           if ( $finished ) { ?>
                             <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>&finished=true">View</a></td>
                             <?php
                           }else{ ?>
 
-                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>">Add</a></td>
+                            <td><a href="enter_result.php?appointment=<?=$data["appointment_id"]?>&comps=<?=$data["components"]?>&name<?=$name?>&type=<?=$data["test_name"]?>&test_id=<?=$data["test_id"]?>">Add</a></td>
 
                         <?php } ?>
 

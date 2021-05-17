@@ -1,3 +1,14 @@
+<?php
+
+  require_once("../config.php");
+
+  session_start();
+
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
+    header("location:../index.php");
+  }
+
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -22,9 +33,9 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome <?=$_SESSION["userName"]?></a>
             <form class="d-flex">
-              <button class="btn btn-danger" type="submit">Logout</button>
+              <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
           </div>
         </nav>
@@ -33,50 +44,190 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="m-4 text-center">
-          <h2 class="h2">TEST RESULT</h2>
+        <div class="my-4 text-center">
+          <h2 class="h2">Appointment Details</h2>
         </div>
 
         <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
+            <?php
+              try {
+
+                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+                      $tc = $_SESSION["TC"];
+
+                      $query = $connection->prepare("
+                      Select * 
+                      FROM appointment, user JOIN patient ON user.TC=patient.TC 
+                      where (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=?)
+                      and patient.TC=? and appointment_id=? ORDER BY app_date DESC;"
+                      );
+
+                      
+
+                      $query->execute(
+                        array(
+                           $_GET['tc_number'],$tc,$_GET['appointment'] //CHANGE TO DOCTOR TC
+                         )
+                      );
+                      
+
+                      if ( $query->rowCount() > 0 ){
+
+                        $data = $query->fetch();
+
+
+            ?>
             <div class="col-12 col-md-6">
               <p>
                 <b>Patient Name: </b>
-                Hakan Kara
+                <?=($data["first_name"] . " " . $data["last_name"])?>
               </p>
             </div>
             <div class="col-12 col-md-6">
               <p>
-                <b>Laboratorian Name: </b>
-                Seda Kuşçu
+                <b>TC: </b>
+                <?=$data["TC"]?>
               </p>
             </div>
             <div class="col-12 col-md-6">
               <p>
-                <b>Date: </b>
-                02/03/2020
+                <b>Height: </b>
+                <?=$data["height"]?> m
               </p>
             </div>
             <div class="col-12 col-md-6">
               <p>
-                <b>Time: </b>
-                18.30
+                <b>Weight: </b>
+                <?=$data["weight"]?>
               </p>
             </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Gender: </b>
+                <?=$data["gender"]?>
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Birtdate: </b>
+                <?=$data["birthdate"]?>
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Phone Number: </b>
+                <?=$data["phone_number"]?>
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Email: </b>
+                <?=$data["email"]?>
+              </p>
+            </div>
+            
+
             <div class="col-12">
-              <h3 class="h3 text-center mb-2">RESULTS</h3>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+
+              <!--
+                ============================================ IMPORTANT ============================================
+              -->
+
+              <h3 class="h3 text-center mb-2">Symptoms</h3>
+              
+              <div class="col-12 col-md-6 mx-auto mt-4">
+                <p class="fs-4">
+                  Showing:
+                  <?php
+
+                  $query = $connection->prepare("
+                  SELECT * FROM showing WHERE appointment_id=?;"
+                  );
+
+                  $query->execute(
+                    array(
+                      $_GET['appointment']
+                    )
+                  );
+
+                  while($data = $query->fetch()){ ?>
+
+                    <b><?=$data["symptom_name"]?>,</b>
+
+                    <?php
+                  }
+
+                  ?>
+                </p>
+
+                <p class="fs-3 mt-4">
+                  Disease:
+                  <b>
+                    <?php
+                      $query = $connection->prepare("
+                        SELECT disease_name FROM diagnose WHERE appointment_id=?;"
+                      );
+
+                      $query->execute(
+                        array(
+                          $_GET["appointment"]
+                        )
+                      );
+
+                      if ( $query->rowCount() > 0 ){
+
+                        $data = $query->fetch();
+
+                        echo $data["disease_name"];
+
+                      }
+
+                    ?>
+                  </b>
+                </p>
+
+                <p class="fs-3 mt-4">
+                  Comment:
+                  <b>
+                    <?php
+                      $query = $connection->prepare("
+                        SELECT description FROM appointment WHERE appointment_id=?;"
+                      );
+
+                      $query->execute(
+                        array(
+                          $_GET["appointment"]
+                        )
+                      );
+
+                      if ( $query->rowCount() > 0 ){
+
+                        $data = $query->fetch();
+
+                        echo $data["description"];
+
+                      }
+
+                    ?>
+                  </b>
+                </p>
             </div>
+
+            <?php
+          }
+
+              } catch (PDOException $err) {
+                echo "<h1>Cant Connect Database!</h1>";
+              }
+            ?>
           </div>
         </div>
 
 
-        <div class="col-12 text-center mt-3">
-          <a href="test_result.php" class="btn btn-danger p-2">Return</a>
+        <div class="col-12 text-center my-3">
+          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

@@ -89,6 +89,12 @@
               </form>
             </div>
 
+            <div class="col-12 mb-3">
+              <form class="d-flex justify-content-center">
+                <a href="see_test_results.php" class="btn btn-danger p-3 w-100">View Test Results</a>
+              </form>
+            </div>
+
           </div>
         </div>
 
