@@ -227,8 +227,13 @@
                       </div>
 
                     <?php
-                  }else{
-                    echo "olmadı kardeş,";
+                  }else{ ?>
+
+                    <div class="badge bg-danger text-wrap p-2 w-50" style="width: 6rem;">
+                       Cannot Be Added!
+                    </div>
+
+                    <?php
                   }
 
                   }

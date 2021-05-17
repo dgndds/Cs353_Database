@@ -73,9 +73,13 @@
             SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id, appointment.app_date
             FROM
             ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=doctorTC) JOIN test ON test.test_id=request_test.test_id, appointment
-            Where appointment.appointment_id=request_test.appointment_id;");
+            Where appointment.appointment_id=request_test.appointment_id and test_name=(select speciality from laboratorian where TC=?);");
 
-            $query->execute();
+            $query->execute(
+              array(
+                $_SESSION["TC"]
+              )
+            );
 
             $counter = 1;
             while ( $data = $query->fetch() ) {
