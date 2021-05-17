@@ -85,6 +85,26 @@
                 </div>
                 <div class="col-7">
                   <form action="enter_result.php" method="POST">
+
+                    <?php
+
+                      $query = $connection->prepare("
+                        SELECT companent_name FROM result WHERE test_id=? and appointment_id=? and laboratorian\.TC=?"
+                      );
+
+                      $query->execute(
+                        array(
+                          $_GET["test_id"], $_GET["appointment"], $_SESSION["TC"]
+                        )
+                      );
+
+                      while ( $data = $query->fetch() ) {
+                        echo $data["companent_name"];
+                      }
+
+                    ?>
+
+
                   <select name="selected_component" class="form-select" aria-label="Select">
                     <option selected>Select</option>
 
