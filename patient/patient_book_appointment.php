@@ -52,15 +52,16 @@
 
       //while($appoinment = $query->fetch()){
         //SELECT * FROM appointment,time_shift where app_date=shift_date
-        $query = $connection->prepare("SELECT * FROM appointment,time_shift where app_date=shift_date and TC=?");
+        $query = $connection->prepare("SELECT * FROM appointment,time_shift where app_date=shift_date and app_date=? and TC=?");
 
         $query->execute(
           array(
-            $selectedDoctor
+            $selectedDate,$selectedDoctor
           )
         );
 
         while($bookappoinment = $query->fetch()){
+          echo "bookappointment date: ".$bookappoinment["appointment_id"];
           $query = $connection->prepare("INSERT INTO book_appointment (patientTC, doctorTC, appointment_id) VALUES (?, ?, ?)");
 
           $query->execute(

@@ -35,7 +35,7 @@
           <div class="container-fluid">
             <a class="navbar-brand">Welcome <?=$_SESSION["userName"]?></a>
             <form class="d-flex">
-              <a href="../logout.php" class="btn btn-danger">Logout</a>
+              <button class="btn btn-danger" type="submit">Logout</button>
             </form>
           </div>
         </nav>
@@ -44,31 +44,28 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="my-4 text-center">
-          <h2 class="h2">Patient Details</h2>
+        <div class="m-4 text-center">
+        <h2 class="h2"><?=strtoupper($_GET["companent_name"])?> TEST RESULT</h2>
         </div>
-
         <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <?php
               try {
-
                 $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                       $tc = $_SESSION["TC"];
 
                       $query = $connection->prepare("
-                      Select * 
-                      FROM appointment, user JOIN patient ON user.TC=patient.TC 
-                      where (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=?)
-                      and patient.TC=? and appointment_id=? ORDER BY app_date DESC;"
+                      select * 
+                      from user,(
+                      SELECT *
+                      FROM book_appointment natural join result natural join appointment natural join test) AS T 
+                      where `laboratorian.TC` = TC and patientTC=? and test_id=?"
                       );
-
                       
-
                       $query->execute(
                         array(
-                           $_GET['tc_number'],$tc,$_GET['appointment'] //CHANGE TO DOCTOR TC
+                          $tc,$_GET['test_id'] 
                          )
                       );
                       
@@ -76,147 +73,67 @@
                       if ( $query->rowCount() > 0 ){
 
                         $data = $query->fetch();
-
-
             ?>
             <div class="col-12 col-md-6">
               <p>
                 <b>Patient Name: </b>
+                <?=$_SESSION["userName"]?>
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Laboratorian Name: </b>
                 <?=($data["first_name"] . " " . $data["last_name"])?>
               </p>
             </div>
             <div class="col-12 col-md-6">
               <p>
-                <b>TC: </b>
-                <?=$data["TC"]?>
+                <b>Date: </b>
+                <?=$data["app_date"]?>
               </p>
             </div>
             <div class="col-12 col-md-6">
               <p>
-                <b>Height: </b>
-                <?=$data["height"]?> m
+                <b>Test Name: </b>
+                <?=$data["test_name"]?> 
               </p>
             </div>
-            <div class="col-12 col-md-6">
-              <p>
-                <b>Weight: </b>
-                <?=$data["weight"]?>
-              </p>
-            </div>
-            <div class="col-12 col-md-6">
-              <p>
-                <b>Gender: </b>
-                <?=$data["gender"]?>
-              </p>
-            </div>
-            <div class="col-12 col-md-6">
-              <p>
-                <b>Birtdate: </b>
-                <?=$data["birthdate"]?>
-              </p>
-            </div>
-            <div class="col-12 col-md-6">
-              <p>
-                <b>Phone Number: </b>
-                <?=$data["phone_number"]?>
-              </p>
-            </div>
-            <div class="col-12 col-md-6">
-              <p>
-                <b>Email: </b>
-                <?=$data["email"]?>
-              </p>
-            </div>
-
+            
             <div class="col-12">
 
               <!--
                 ============================================ IMPORTANT ============================================
               -->
 
-              <h3 class="h3 text-center mb-2">Symptoms</h3>
+              <h3 class="h3 text-center mb-2">COMPONENT RESULTS</h3>
               
-              <div class="col-12 col-md-6 mx-auto mt-4">
-                <p class="fs-4">
-                  Showing:
+              <div class="col-12">
+                <p>
                   <?php
 
                   $query = $connection->prepare("
-                  SELECT * FROM showing WHERE appointment_id=?;"
+                  select * 
+                  from user,component,(
+                  SELECT *
+                  FROM book_appointment natural join result natural join appointment natural join test ) AS T 
+                  where `laboratorian.TC` = TC and patientTC=? and companent_name=? and T.companent_name = component_name"
                   );
 
                   $query->execute(
                     array(
-                      $_GET['appointment']
+                      $tc,$_GET['companent_name'] 
                     )
                   );
 
                   while($data = $query->fetch()){ ?>
-
-                    <b><?=$data["symptom_name"]?>,</b>
-
+                    <b><?=$data["companent_name"]." ".$data["score"]." "."Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
                     <?php
                   }
-
                   ?>
                 </p>
-
-                <p class="fs-3 mt-4">
-                  Disease:
-                  <b>
-                    <?php
-                      $query = $connection->prepare("
-                        SELECT disease_name FROM diagnose WHERE appointment_id=?;"
-                      );
-
-                      $query->execute(
-                        array(
-                          $_GET["appointment"]
-                        )
-                      );
-
-                      if ( $query->rowCount() > 0 ){
-
-                        $data = $query->fetch();
-
-                        echo $data["disease_name"];
-
-                      }
-
-                    ?>
-                  </b>
-                </p>
-
-                <p class="fs-3 mt-4">
-                  Comment:
-                  <b>
-                    <?php
-                      $query = $connection->prepare("
-                        SELECT description FROM appointment WHERE appointment_id=?;"
-                      );
-
-                      $query->execute(
-                        array(
-                          $_GET["appointment"]
-                        )
-                      );
-
-                      if ( $query->rowCount() > 0 ){
-
-                        $data = $query->fetch();
-
-                        echo $data["description"];
-
-                      }
-
-                    ?>
-                  </b>
-                </p>
             </div>
-
             <?php
           }
-
               } catch (PDOException $err) {
                 echo "<h1>Cant Connect Database!</h1>";
               }
@@ -224,16 +141,11 @@
           </div>
         </div>
 
-
-        <div class="col-12 text-center my-3">
-          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
+        <div class="col-12 text-center mt-3">
+          <a href="see_test_results.php" class="btn btn-danger p-2">Return</a>
         </div>
-
       </div>
-
-
     </div>
-
 
     <!-- Optional JavaScript; choose one of the two! -->
 

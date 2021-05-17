@@ -45,7 +45,7 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2 mb-3">PATIENT APPOINTMENTS</h2>
+          <h2 class="h2 mb-3">TEST RESULTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -55,10 +55,10 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Id</th>
-                  <th scope="col">Doctor Name</th>
+                  <th scope="col">Test Id</th>
+                  <th scope="col">Laboratorian Name</th>
                   <th scope="col">Date</th>
-                  <th scope="col">Status</th>
+                  <th scope="col">Appointment Id</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
@@ -68,97 +68,43 @@
 
 
                   try {
-
                     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+                    $tc = $_SESSION["TC"];
 
-                    if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
+                    $query = $connection->prepare("select * 
+                                                        from user,(
+                                                        SELECT *
+                                                        FROM book_appointment natural join result natural join appointment
+                                                        where patientTC=?  group by test_id) AS T 
+                                                        where `laboratorian.TC` = TC"
+                    );
 
-                          $tc = $_SESSION["TC"];
+                    $query->execute(
+                        array(
+                            $tc
+                        )
+                    );
 
-                          $query = $connection->prepare("
-                          select * from 
-                          (select appointment_id,user.first_name patientName,user.last_name patientLastName,T3.first_name doctorName,T3.last_name doctorLastName, description,patientTC,doctorTC,app_date from user,
-                          (select * from user natural join 
-                          (select * from doctor natural join 
-                          (select * from book_appointment natural join appointment) as T where doctorTC = doctor.TC) as T2 where user.TC= doctorTC ) as T3 where user.TC = patientTC) as T4 where patientTC=?
-                          ");
-                          
+                    if ( $query->rowCount() > 0 ){
 
-                          $query->execute(
-                            array(
-                               $tc
-                             )
-                          );
-
-                          if ( $query->rowCount() > 0 ){
-
-                            $counter = 1;
-                            $flag = 0;
-                            while($data = $query->fetch()) { ?>
+                        $counter = 1;
+                        while($data = $query->fetch()) {
+                ?>
 
                                <tr>
                                 <th scope="row"><?php echo $counter++; ?></th>
-                                <td><?php echo $data['appointment_id']; ?></td>
-                                <td><?php echo $data['doctorName'] . " " . $data['doctorLastName']; ?></td>
+                                <td><?php echo $data['test_id']; ?></td>
+                                <td><?php echo $data['first_name'] . " " . $data['last_name']; ?></td>
                                 <td><?php echo $data['app_date']; ?></td>
-
-                                <td>
-
-                                <?php
-
-                                  $today = date("Y-m-d");
-
-                                  if ( $today == $data['app_date'] ) { ?>
-
-                                    Continuing &nbsp;<a href="#" class="btn btn-warning disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  $flag = 1;
-                                  }else if($today < $data['app_date']){ ?>
-
-                                    Undone &nbsp;<a href="#" class="btn btn-danger disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  $flag = 0;
-                                  }else { ?>
-
-                                    Done &nbsp;<a href="#" class="btn btn-success disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  $flag = 1;
-                                  }
-
-                                ?>
-
-                                </td>
-
-                                <td>
-                                  <?php
-                                    if ( $flag ) { ?>
-
-                                      <a href="patient_details.php?tc_number=<?=$data['doctorTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
-
-                                      <?php
-                                    }else{
-                                  ?>
-                                  
-                                </td>
-                              <?php } ?>
+                                <td><?php echo $data['appointment_id']; ?></td>
+                                <td><a href="view_test_result.php?&test_id=<?=$data['test_id']?>" class="link-primary">View</a></td>
                               </tr>
-
-                          <?php  }
-
-                          }else {
-
+                          <?php
                           }
-
-                    }
-
-                  } catch (PDOException $err) {
+                        }
+                } catch (PDOException $err) {
                     echo "<h1>Cant Connect Database!</h1>";
-                  }
-
-                ?>
+                }?>
 
               </tbody>
             </table>
