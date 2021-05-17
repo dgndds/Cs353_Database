@@ -28,12 +28,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
@@ -76,10 +95,6 @@
             <tbody>
 
               <?php
-
-                try {
-
-                  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                   if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
 

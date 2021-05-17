@@ -13,7 +13,7 @@
     $app = $_GET['appointment'];
   }
   if (isset($_POST['d_name']) && isset($_POST['treat_name']) && isset($_POST['med_id']) && isset($_POST['usage']))  {
-    
+
     $query = $connection->prepare("INSERT INTO prescribe (`treatment_id`, `medicine_id`, `appointment_id`, `usage_description`, `supplied`) VALUES (?, ?, ?, ?, ?);");
     $query->execute(array(
       $_POST['treat_name'], $_POST['med_id'], $app, $_POST['usage'], 0
@@ -40,12 +40,28 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Murat Kuşçu</a>
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
@@ -63,7 +79,7 @@
           <form class="row g-3" method="POST">
             <div class="col-md-10">
               <label for="inputEmail4" class="form-label" style="font-size:20px">Patient Name: </label>
-              <label for="inputEmail4" style="font-weight:bold; font-size:20px;" class="form-label"><?php 
+              <label for="inputEmail4" style="font-weight:bold; font-size:20px;" class="form-label"><?php
                 $query1= $connection->prepare("select * from user where TC = $p_tc");
                 $query1->execute();
                 $row1 = $query1->fetch();
@@ -143,7 +159,7 @@
           </form>
         </div>
         <div class="col-12 text-center mt-3">
-          <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
+          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

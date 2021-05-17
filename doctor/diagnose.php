@@ -29,11 +29,31 @@
 
     <div class="container-fluid p-0">
 
+    <?php
+
+    try {
+
+      $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+        $query = $connection->prepare("
+        SELECT first_name, last_name FROM user WHERE TC=?;"
+        );
+
+        $query->execute(
+          array(
+            $_SESSION["TC"]
+          )
+        );
+
+        $data = $query->fetch();
+
+    ?>
+
       <!-- HEADER -->
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
@@ -52,12 +72,7 @@
           <div class="row text-center">
             <?php
 
-
-              try {
-
-                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
-
-                if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor" && isset($_GET["tc_number"]) && $_GET["tc_number"] != "") ) {
+            if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor" && isset($_GET["tc_number"]) && $_GET["tc_number"] != "") ) {
 
                       if ( isset($_GET["delete"]) ) {
                         $symptom = $_GET["delete"];
@@ -387,7 +402,7 @@
                 )
               );
 
-              $all_tests_resolved = 0;
+              $all_tests_resolved = 1;
 
               while ( $data = $query->fetch() ) {
 
@@ -401,8 +416,8 @@
                   )
                 );
 
-                if ( $inner_query->rowCount() == str_word_count( $data["components"])) {
-                  $all_tests_resolved = 1;
+                if ( $inner_query->rowCount() != str_word_count( $data["components"])) {
+                  $all_tests_resolved = 0;
                 }
 
               }

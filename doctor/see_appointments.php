@@ -28,12 +28,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -66,11 +85,6 @@
 
                 <?php
 
-
-                  try {
-
-                    $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
-
                     if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
 
                           $tc = $_SESSION["TC"];
@@ -97,6 +111,7 @@
 
                             $counter = 1;
                             $flag = 0;
+                            $future = 0;
                             while($data = $query->fetch()) { ?>
 
                                <tr>
@@ -122,6 +137,7 @@
                                     Undone &nbsp;<a href="#" class="btn btn-danger disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
 
                                   <?php
+                                  $future = 1;
                                   $flag = 0;
                                   }else { ?>
 
@@ -137,11 +153,21 @@
 
                                 <td>
                                   <?php
-                                    if ( !$flag ) { ?>
+                                    if ( !$flag ) {
+
+                                      if ( $future ) {
+                                      ?>
+
+                                      <a href="patient_details.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>&status=future" class="link-primary">View</a>
+
+                                      <?php
+                                      $future = 0;
+                                    }else{ ?>
 
                                       <a href="patient_details.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
 
                                       <?php
+                                    }
                                     }else{
                                   ?>
                                   <a href="diagnose.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Diagnose,</a>

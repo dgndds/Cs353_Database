@@ -28,12 +28,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <button class="btn btn-danger" type="submit">Logout</button>
             </form>
@@ -50,25 +69,23 @@
         <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <?php
-              try {
-                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                       $tc = $_SESSION["TC"];
 
                       $query = $connection->prepare("
-                      select * 
+                      select *
                       from user,(
                       SELECT *
-                      FROM book_appointment natural join result natural join appointment natural join test) AS T 
+                      FROM book_appointment natural join result natural join appointment natural join test) AS T
                       where `laboratorian.TC` = TC and patientTC=? and test_id=?"
                       );
-                      
+
                       $query->execute(
                         array(
-                          $_GET['patient_tc'] ,$_GET['test_id'] 
+                          $_GET['patient_tc'] ,$_GET['test_id']
                          )
                       );
-                      
+
 
                       if ( $query->rowCount() > 0 ){
 
@@ -95,10 +112,10 @@
             <div class="col-12 col-md-6">
               <p>
                 <b>Test Name: </b>
-                <?=$data["test_name"]?> 
+                <?=$data["test_name"]?>
               </p>
             </div>
-            
+
             <div class="col-12">
 
               <!--
@@ -106,27 +123,26 @@
               -->
 
               <h3 class="h3 text-center mb-2">COMPONENT RESULTS</h3>
-              
+
               <div class="col-12">
                 <p>
                   <?php
 
                   $query = $connection->prepare("
-                  select * 
-                  from user,component,(
-                  SELECT *
-                  FROM book_appointment natural join result natural join appointment natural join test ) AS T 
-                  where `laboratorian.TC` = TC and patientTC=? and companent_name=? and T.companent_name = component_name"
+                  select *
+                  from user,component,(SELECT *
+                                    FROM book_appointment natural join result natural join appointment natural join test ) AS T
+                                    where `laboratorian.TC` = user.TC and patientTC=? and component.component_name=? and T.component_name = component.component_name;"
                   );
 
                   $query->execute(
                     array(
-                      $_GET['patient_tc'],$_GET['companent_name'] 
+                      $_GET['patient_tc'], $_GET['component_name']
                     )
                   );
 
                   while($data = $query->fetch()){ ?>
-                    <b><?=$data["companent_name"]." ".$data["score"]." "."Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
+                    <b><?=$data["component_name"]." ".$data["score"]." "."- Interval: Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
                     <?php
                   }
                   ?>
@@ -142,7 +158,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
+          <a href="view_result.php?patient_name=<?=$_GET["patient_name"]?>&patient_tc=<?=$_GET["patient_tc"]?>&test_id=<?=$_GET["test_id"]?>&appointment=<?=$_GET["appointment"]?>" class="btn btn-danger p-2">Return</a>
         </div>
       </div>
     </div>

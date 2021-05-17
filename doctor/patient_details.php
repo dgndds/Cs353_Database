@@ -28,12 +28,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger">Logout</a>
             </form>
@@ -51,11 +70,6 @@
         <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <?php
-
-
-              try {
-
-                $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                 if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor" && isset($_GET["tc_number"]) && $_GET["tc_number"] != "") ) {
 
@@ -137,6 +151,17 @@
                 <?=$data["email"]?>
               </p>
             </div>
+
+            <?php
+              $flag = 1;
+
+              if ( isset($_GET["status"]) && $_GET["status"] == "future" ) {
+                  $flag = 0;
+              }
+
+              if ( $flag ) {
+
+            ?>
 
             <p class="fs-4">
               Showing:
@@ -270,7 +295,7 @@
                           $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
 
                           if ( $finished ) { ?>
-                            <td><a href="view_result.php?patient_name=<?=($data["first_name"] . " " . $data["last_name"])?>&patient_tc=<?=$data["patientTC"]?>&test_id=<?=$data["test_id"]?>">View</a></td>
+                            <td><a href="view_result.php?patient_name=<?=($data["first_name"] . " " . $data["last_name"])?>&patient_tc=<?=$data["patientTC"]?>&test_id=<?=$data["test_id"]?>&appointment=<?=$_GET["appointment"]?>">View</a></td>
                             <?php
                           }else{ ?>
 
@@ -287,7 +312,7 @@
             </table>
 
             <div class="my-4">
-              <p class="fs-4"> <b>Prescribes</b> </p>
+              <p class="fs-4"> <b>Last Prescribed Medicine(s)</b> </p>
             </div>
 
             <table class="table table-sm table-striped table-hover">
@@ -296,7 +321,6 @@
                   <th scope="col">#</th>
                   <th scope="col">Medicine Name</th>
                   <th scope="col">Medicine Type</th>
-                  <th scope="col">Medicine Quantity</th>
                   <th scope="col">Usage Description</th>
                 </tr>
               </thead>
@@ -304,7 +328,7 @@
                 <?php
 
                     $query = $connection->prepare("
-                    SELECT medicine_name, type, medicine_qty, usage_description
+                    SELECT medicine_name, type, usage_description
                     FROM prescribe JOIN medicine ON prescribe.medicine_id=medicine.medicine_id
                     WHERE appointment_id=?
                     ;");
@@ -324,7 +348,6 @@
                         <th scope="row"><?=$counter++?></th>
                         <td><?=$data["medicine_name"]?></td>
                         <td><?=$data["type"]?></td>
-                        <td><?=$data["medicine_qty"]?></td>
                         <td><?=$data["usage_description"]?></td>
                       </tr>
 
@@ -335,6 +358,7 @@
             </table>
 
             <?php
+          }
 
           }}else {
             header("location:see_appointments.php");

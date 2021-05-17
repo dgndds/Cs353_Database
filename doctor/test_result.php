@@ -28,12 +28,31 @@
   <body class="bg">
 
     <div class="container-fluid p-0">
+      <?php
 
-      <!-- HEADER -->
-      <div class="row">
-        <nav class="navbar navbar-light header px-0">
-          <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+      try {
+
+        $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+
+          $query = $connection->prepare("
+          SELECT first_name, last_name FROM user WHERE TC=?;"
+          );
+
+          $query->execute(
+            array(
+              $_SESSION["TC"]
+            )
+          );
+
+          $data = $query->fetch();
+
+      ?>
+
+        <!-- HEADER -->
+        <div class="row">
+          <nav class="navbar navbar-light header px-0">
+            <div class="container-fluid">
+              <a class="navbar-brand">Welcome Doctor <?=($data["first_name"] . " " . $data["last_name"])?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -46,17 +65,6 @@
 
         <div class="my-4 text-center">
           <h2 class="h2">TEST RESULT HISTORY</h2>
-        </div>
-
-        <div class="col-12 col-md-8 mx-auto mb-3">
-          <div class="row justify-content-end">
-            <div class="col-4 ml-auto p-0">
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
-            </div>
-          </div>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -74,10 +82,6 @@
               </thead>
               <tbody>
                 <?php
-
-                  try {
-
-                    $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
                     $query = $connection->prepare("
                     SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id
@@ -160,7 +164,7 @@
           </div>
         </div>
         <div class="col-12 text-center mt-3">
-          <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
+          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>
