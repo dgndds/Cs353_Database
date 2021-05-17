@@ -33,9 +33,9 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
+            <a class="navbar-brand">Welcome Hakan Kara</a>
             <form class="d-flex">
-              <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
+              <button class="btn btn-danger" type="submit">Logout</button>
             </form>
           </div>
         </nav>
@@ -44,10 +44,9 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="my-4 text-center">
-          <h2 class="h2 mb-3">TEST RESULTS</h2>
+        <div class="m-4 text-center">
+        <h2 class="h2"><?=strtoupper($_GET["companent_name"])?> TEST RESULT</h2>
         </div>
-
         <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
             <?php
@@ -78,7 +77,7 @@
             <div class="col-12 col-md-6">
               <p>
                 <b>Patient Name: </b>
-                <?=$_GET['patient_name']?>
+                <?=$_GET["patient_name"]?>
               </p>
             </div>
             <div class="col-12 col-md-6">
@@ -106,7 +105,7 @@
                 ============================================ IMPORTANT ============================================
               -->
 
-              <h3 class="h3 text-center mb-2">RESULTS</h3>
+              <h3 class="h3 text-center mb-2">COMPONENT RESULTS</h3>
               
               <div class="col-12">
                 <p>
@@ -114,20 +113,20 @@
 
                   $query = $connection->prepare("
                   select * 
-                  from user,(
+                  from user,component,(
                   SELECT *
-                  FROM book_appointment natural join result natural join appointment) AS T 
-                  where `laboratorian.TC` = TC and patientTC=? and test_id=?"
+                  FROM book_appointment natural join result natural join appointment natural join test ) AS T 
+                  where `laboratorian.TC` = TC and patientTC=? and companent_name=? and T.companent_name = component_name"
                   );
 
                   $query->execute(
                     array(
-                      $_GET['patient_tc'] ,$_GET['test_id'] 
+                      $_GET['patient_tc'],$_GET['companent_name'] 
                     )
                   );
 
                   while($data = $query->fetch()){ ?>
-                    <b><?=$data["companent_name"]." ".$data["score"]." "?><a href="component_result.php?patient_name=<?=($_GET["patient_name"])?>&patient_tc=<?=$data["patientTC"]?>&companent_name=<?=$data["companent_name"]?>&test_id=<?=$data['test_id']?>&">past results</a></b><br>
+                    <b><?=$data["companent_name"]." ".$data["score"]." "."Min: ".$data["min"]." "."Max: ".$data["max"]?></b><br>
                     <?php
                   }
                   ?>
@@ -143,14 +142,10 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="index.php" class="btn btn-danger p-2">Return</a>
+          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
         </div>
-
       </div>
-
-
     </div>
-
 
     <!-- Optional JavaScript; choose one of the two! -->
 
