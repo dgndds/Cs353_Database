@@ -109,7 +109,7 @@
                 </div>
                 <div class="col-md-6">
                   <label for="validationCustom02" class="form-label">TC</label>
-                  <input type="number" min="0" name="tc_id" class="form-control" id="validationCustom02" required>
+                  <input type="number" min="0" max="2147483647" name="tc_id" class="form-control" id="validationCustom02" required>
                   <div class="valid-feedback">
                     Looks good!
                   </div>
