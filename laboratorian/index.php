@@ -62,14 +62,10 @@
                 <a href="view_requests.php" class="btn btn-danger p-3 w-100">View Tests Requests</a>
               </form>
             </div>
-
           </div>
         </div>
-
       </div>
-
     </div>
-
 
     <!-- Optional JavaScript; choose one of the two! -->
 
