@@ -7,6 +7,18 @@
   if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
     header("location:../index.php");
   }
+  $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
+  if (isset($_GET['tc_number'])){
+    $p_tc = $_GET['tc_number'];
+    $app = $_GET['appointment'];
+  }
+  if (isset($_POST['d_name']) && isset($_POST['treat_name']) && isset($_POST['med_id']) && isset($_POST['usage']))  {
+    
+    $query = $connection->prepare("INSERT INTO prescribe (`treatment_id`, `medicine_id`, `appointment_id`, `usage_description`, `supplied`) VALUES (?, ?, ?, ?, ?);");
+    $query->execute(array(
+      $_POST['treat_name'], $_POST['med_id'], $app, $_POST['usage'], 0
+    ));
+  }
 
 ?>
 <!doctype html>
@@ -47,45 +59,89 @@
         <div class="my-4 text-center">
           <h2 class="h2">PRESCRIBE PATIENT</h2>
         </div>
-
-
         <div class="col-8 mx-auto bg-form p-4 rounded">
-          <form class="row g-3">
-            <div class="col-md-4">
-              <label for="inputEmail4" class="form-label">Patient Name</label>
-              <input type="email" class="form-control" id="inputEmail4">
+          <form class="row g-3" method="POST">
+            <div class="col-md-10">
+              <label for="inputEmail4" class="form-label" style="font-size:20px">Patient Name: </label>
+              <label for="inputEmail4" style="font-weight:bold; font-size:20px;" class="form-label"><?php 
+                $query1= $connection->prepare("select * from user where TC = $p_tc");
+                $query1->execute();
+                $row1 = $query1->fetch();
+                $name = $row1['first_name'] . " " . $row1['last_name'];
+                echo $name;
+              ?></label>
             </div>
             <div class="col-md-4">
               <label for="inputPassword4" class="form-label">Disease Name</label>
-              <input type="password" class="form-control" id="inputPassword4">
+              <select class="form-select w-50" name="d_name" aria-label="Select" id="component">
+                <option selected disabled value="">Select</option>
+
+                  <?php
+
+                    $query = $connection->prepare("
+                      SELECT * FROM disease;"
+                    );
+
+                    $query->execute();
+
+                    while ( $data = $query->fetch() ) { ?>
+                      <option value="<?=$data["disease_name"]?>"><?=$data["disease_name"]?></option>
+                    <?php
+                    }
+
+                  ?>
+                </select>
             </div>
             <div class="col-md-4">
-              <label for="inputPassword4" class="form-label">Treat Name</label>
-              <input type="password" class="form-control" id="inputPassword4">
+              <label for="inputPassword4" class="form-label">Treatment Name</label>
+              <select class="form-select w-50" name="treat_name" aria-label="Select" id="component">
+                <option selected disabled value="">Select</option>
+                  <?php
+
+                    $query = $connection->prepare("
+                      SELECT * FROM treatment;"
+                    );
+
+                    $query->execute();
+
+                    while ( $data = $query->fetch() ) { ?>
+                      <option value="<?=$data["treatment_id"]?>"><?=$data["treatment_name"]?></option>
+                    <?php
+                    }
+
+                  ?>
+                </select>
             </div>
             <div class="col-md-4">
-              <label for="inputEmail4" class="form-label">Medicine Type</label>
-              <input type="email" class="form-control" id="inputEmail4">
-            </div>
-            <div class="col-md-4">
-              <label for="inputPassword4" class="form-label">Medicine Name</label>
-              <input type="password" class="form-control" id="inputPassword4">
-            </div>
-            <div class="col-md-4">
-              <label for="inputPassword4" class="form-label">Treatment Type</label>
-              <input type="password" class="form-control" id="inputPassword4">
+              <label for="inputPassword4" class="form-label">Medicine Name - Type</label>
+              <select class="form-select w-50" name="med_id" aria-label="Select" id="component">
+                <option selected disabled value="">Select</option>
+
+                  <?php
+
+                    $query = $connection->prepare("
+                      SELECT * FROM medicine;"
+                    );
+
+                    $query->execute();
+
+                    while ( $data = $query->fetch() ) { ?>
+                      <option value="<?=$data["medicine_id"]?>"><?=$data["medicine_name"] . " - " . $data["type"]?></option>
+                    <?php
+                    }
+
+                  ?>
+                </select>
             </div>
             <div class="col-12 form-floating">
               <p>Comments</p>
-              <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+              <textarea class="form-control" name="usage" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+            </div>
+            <div class="col-12 text-center mt-3">
+              <button type="submit" class="btn btn-danger p-2">Register Prescription</button>
             </div>
           </form>
         </div>
-
-        <div class="col-12 text-center mt-3">
-          <button type="submit" class="btn btn-danger p-2">Register Prescription</button>
-        </div>
-
         <div class="col-12 text-center mt-3">
           <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
         </div>
