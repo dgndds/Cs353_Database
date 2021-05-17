@@ -151,6 +151,12 @@
                 <?=$data["email"]?>
               </p>
             </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Blood Type: </b>
+                <?=$data["blood_type"]?>
+              </p>
+            </div>
 
             <?php
               $flag = 1;
