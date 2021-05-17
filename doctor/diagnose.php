@@ -375,8 +375,11 @@
               <?php
 
               $query = $connection->prepare("
-                SELECT description FROM appointment WHERE appointment_id=?;"
-              );
+              SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id
+              FROM
+              ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=patientTC) JOIN test ON test.test_id=request_test.test_id
+              WHERE request_test.appointment_id=?
+              ;");
 
               $query->execute(
                 array(
@@ -385,6 +388,24 @@
               );
 
               $all_tests_resolved = 0;
+
+              while ( $data = $query->fetch() ) {
+
+                $inner_query = $connection->prepare("
+                SELECT * FROM result WHERE test_id=?"
+                );
+
+                $inner_query->execute(
+                  array(
+                    $data["test_id"]
+                  )
+                );
+
+                if ( $inner_query->rowCount() == str_word_count( $data["components"])) {
+                  $all_tests_resolved = 1;
+                }
+
+              }
 
               if ( $all_tests_resolved ) {
 
