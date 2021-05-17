@@ -243,7 +243,7 @@
         </div>
 
         <div class="col-12 text-center mt-3">
-          <a href="view_patients.php" class="btn btn-danger p-2">Return</a>
+          <a href="see_appointments.php" class="btn btn-danger p-2">Return</a>
         </div>
 
       </div>

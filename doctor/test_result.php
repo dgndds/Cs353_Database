@@ -79,88 +79,82 @@
 
                     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                    if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+                    $query = $connection->prepare("
+                    SELECT first_name, last_name, test_name, components, test.test_id, patientTC, request_test.appointment_id
+                    FROM
+                    ((request_test JOIN book_appointment ON request_test.appointment_id=book_appointment.appointment_id) JOIN user ON user.TC=patientTC) JOIN test ON test.test_id=request_test.test_id
+                    WHERE request_test.appointment_id=?
+                    ;");
 
-                          $tc = $_SESSION["TC"];
+                    $query->execute(
+                      array(
+                        $_GET["appointment"]
+                      )
+                    );
 
-                          $query = $connection->prepare("
-                            Select app_date, user.TC, first_name, last_name
+                    $counter = 1;
+                    while ( $data = $query->fetch() ) {
+                      $finished = 0;
 
-                            FROM appointment, user JOIN patient ON user.TC=patient.TC
+                      $inner_query = $connection->prepare("
+                      SELECT * FROM result WHERE test_id=?"
+                      );
 
-                            where
+                      $inner_query->execute(
+                        array(
+                          $data["test_id"]
+                        )
+                      );
 
-                            (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=12345878)
+                      ?>
 
-                            ORDER BY app_date DESC LIMIT 30;"
-                          );
-
-                          $query->execute(
-                            array(
-                               $tc, $tc
-                             )
-                          );
-
-                          if ( $query->rowCount() > 0 ){
-
-                            $counter = 0;
-                            while($data = $query->fetch()) { ?>
-
-                               <tr>
-                                <th scope="row"><?php echo $counter++; ?></th>
-                                <td><?php echo $data['TC']; ?></td>
-                                <td><?php echo $data['first_name'] . " " . $data['last_name']; ?></td>
-                                <td><?php echo $data['app_date']; ?></td>
-
-                                <td>
-
-                                <?php
-
-                                  $today = date("Y-m-d");
-
-                                  if ( $today == $data['app_date'] ) { ?>
-
-                                    Continuing &nbsp;<a href="#" class="btn btn-warning disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  }else if($today < $data['app_date']){ ?>
-
-                                    Undone &nbsp;<a href="#" class="btn btn-danger disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  }else { ?>
-
-                                    Done &nbsp;<a href="#" class="btn btn-success disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
-
-                                  <?php
-                                  }
-
-                                ?>
-
-                                </td>
-
-                                <td>
-                                  <a href="diagnose.php" class="link-primary">Diagnose,</a>
-                                  <a href="prescribe_patient.php" class="link-primary">Prescribe,</a>
-                                  <a href="test_result.php" class="link-primary">View Tests,</a>
-                                  <a href="request_test.php" class="link-primary">Request Test</a>
-                                </td>
-
-                              </tr>
-
-                          <?php  }
-
-                          }else {
-
+                      <tr>
+                        <th scope="row"><?=$counter++?></th>
+                        <td><?=($data["first_name"] . " " . $data["last_name"])?></td>
+                        <td><?=$data["test_name"]?></td>
+                        <td><?=$data["components"]?></td>
+                        <?php
+                          if ( $inner_query->rowCount() == str_word_count( $data["components"])) {
+                            $finished = 1;?>
+                            <td>Finished &nbsp;&nbsp; <a href="#" class="btn btn-success" style="width:25px;height:25px;"></a></td>
+                            <?php
+                          }else if ( $inner_query->rowCount() == 0){ ?>
+                            <td>Assigned &nbsp;&nbsp; <a href="#" class="btn btn-danger" style="width:25px;height:25px;"></a></td>
+                            <?php
+                          }else if ( $inner_query->rowCount() > 0 ){
+                            ?>
+                            <td>Preparing &nbsp;&nbsp; <a href="#" class="btn btn-warning" style="width:25px;height:25px;"></a></td>
+                            <?php
                           }
 
-                    }
+                          $inner_query = $connection->prepare("
+                          SELECT first_name, last_name FROM user WHERE TC=?;"
+                          );
 
-                  } catch (PDOException $err) {
-                    echo "<h1>Cant Connect Database!</h1>";
-                  }
+                          $inner_query->execute(
+                            array(
+                              $data["patientTC"]
+                            )
+                          );
 
-                ?>
+                          $inner_data = $inner_query->fetch();
+
+                          $name = $inner_data["first_name"] . " " . $inner_data["last_name"];
+
+                          if ( $finished ) { ?>
+                            <td><a href="view_result.php?appointment=<?=$data["appointment_id"]?>">View</a></td>
+                            <?php
+                          }else{ ?>
+
+                            <td><a href="#" disabled></a></td>
+
+                        <?php } ?>
+
+                      </tr>
+
+                      <?php } ?>
+
+
               </tbody>
             </table>
           </div>
@@ -195,6 +189,11 @@
 
     </div>
 
+    <?php
+      } catch (PDOException $err) {
+        echo "<h1>Cant Connect Database!</h1>";
+      }
+    ?>
 
     <!-- Optional JavaScript; choose one of the two! -->
 

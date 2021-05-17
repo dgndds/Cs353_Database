@@ -44,8 +44,8 @@
       <!-- Prescribe Patient -->
       <div class="row">
 
-        <div class="m-4 text-center">
-          <h2 class="h2 mb-3">ALL PATIENTS</h2>
+        <div class="my-4 text-center">
+          <h2 class="h2 mb-3">TEST RESULTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto mb-3">

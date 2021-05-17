@@ -1,14 +1,3 @@
-<?php
-
-  require_once("../config.php");
-
-  session_start();
-
-  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
-    header("location:../index.php");
-  }
-
-?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -33,40 +22,65 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Doctor Hakan Kara</a>
+            <a class="navbar-brand">Welcome Hakan Kara</a>
             <form class="d-flex">
-              <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
+              <button class="btn btn-danger" type="submit">Logout</button>
             </form>
           </div>
         </nav>
       </div>
 
-      <!-- Actions -->
-      <div class="row mt-5">
+      <!-- Prescribe Patient -->
+      <div class="row">
 
-        <div class="my-4 text-center">
-          <h2 class="h2">HOSPITAL DATA MANAGEMENT SYSTEM</h2>
+        <div class="m-4 text-center">
+          <h2 class="h2">TEST RESULT</h2>
         </div>
 
-        <div class="col-12 col-md-4 mx-auto bg-form p-5 rounded">
+        <div class="col-8 mx-auto bg-form p-5 rounded">
           <div class="row text-center">
-
-            <div class="col-12 mb-3">
-              <form class="d-flex justify-content-center">
-                <a href="see_appointments.php" class="btn btn-danger p-3 w-100">View Appointments</a>
-              </form>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Patient Name: </b>
+                Hakan Kara
+              </p>
             </div>
-
-            <div class="col-12 mb-3">
-              <form class="d-flex justify-content-center">
-                <a href="manage_days.php" class="btn btn-danger p-3 w-100">Manage Days</a>
-              </form>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Laboratorian Name: </b>
+                Seda Kuşçu
+              </p>
             </div>
-
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Date: </b>
+                02/03/2020
+              </p>
+            </div>
+            <div class="col-12 col-md-6">
+              <p>
+                <b>Time: </b>
+                18.30
+              </p>
+            </div>
+            <div class="col-12">
+              <h3 class="h3 text-center mb-2">RESULTS</h3>
+              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
+            </div>
           </div>
         </div>
 
+
+        <div class="col-12 text-center mt-3">
+          <a href="test_result.php" class="btn btn-danger p-2">Return</a>
+        </div>
+
       </div>
+
 
     </div>
 

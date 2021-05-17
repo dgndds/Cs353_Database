@@ -454,14 +454,6 @@
                 <?php } ?>
               </div>
 
-              <h3 class="h3 text-center my-4 mb-2">Past Results</h3>
-
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-              <p><b>Magnesium 100mg </b> <a href="#">past results</a> </p>
-
             </div>
 
             <?php

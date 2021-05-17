@@ -4,7 +4,7 @@
 
   session_start();
 
-  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+  if ( !(isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
     header("location:../index.php");
   }
 
@@ -33,7 +33,7 @@
       <div class="row">
         <nav class="navbar navbar-light header px-0">
           <div class="container-fluid">
-            <a class="navbar-brand">Welcome Hakan Kara</a>
+            <a class="navbar-brand">Welcome <?php echo $_SESSION["userName"]?></a>
             <form class="d-flex">
               <a href="../logout.php" class="btn btn-danger" type="submit">Logout</a>
             </form>
@@ -45,7 +45,7 @@
       <div class="row">
 
         <div class="m-4 text-center">
-          <h2 class="h2 mb-3">PATIENT APPOINTMENT HISTORY</h2>
+          <h2 class="h2 mb-3">PATIENT APPOINTMENTS</h2>
         </div>
 
         <div class="col-12 col-md-8 mx-auto bg-form p-5 rounded">
@@ -55,8 +55,8 @@
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">TC</th>
-                  <th scope="col">Patient Name</th>
+                  <th scope="col">Id</th>
+                  <th scope="col">Doctor Name Name</th>
                   <th scope="col">Date</th>
                   <th scope="col">Status</th>
                   <th scope="col">Actions</th>
@@ -71,21 +71,18 @@
 
                     $connection = new PDO("mysql:host=" . $GLOBALS['host'] . "; dbname=" . $GLOBALS['database'], $GLOBALS['username'], $GLOBALS['password']);
 
-                    if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "doctor") ) {
+                    if ( (isset($_SESSION["TC"]) && $_SESSION["type"] == "patient") ) {
 
                           $tc = $_SESSION["TC"];
 
                           $query = $connection->prepare("
-                            Select app_date, user.TC, first_name, last_name, appointment_id
-
-                            FROM appointment, user JOIN patient ON user.TC=patient.TC
-
-                            where
-
-                            (appointment_id, user.TC) in (SELECT appointment_id, patientTC FROM book_appointment WHERE doctorTC=?)
-
-                            ORDER BY app_date DESC LIMIT 30;"
-                          );
+                          select * from 
+                          (select appointment_id,user.first_name patientName,user.last_name patientLastName,T3.first_name doctorName,T3.last_name doctorLastName, description,patientTC,doctorTC,app_date from user,
+                          (select * from user natural join 
+                          (select * from doctor natural join 
+                          (select * from book_appointment natural join appointment) as T where doctorTC = doctor.TC) as T2 where user.TC= doctorTC ) as T3 where user.TC = patientTC) as T4 where patientTC=?
+                          ");
+                          
 
                           $query->execute(
                             array(
@@ -101,8 +98,8 @@
 
                                <tr>
                                 <th scope="row"><?php echo $counter++; ?></th>
-                                <td><?php echo $data['TC']; ?></td>
-                                <td><?php echo $data['first_name'] . " " . $data['last_name']; ?></td>
+                                <td><?php echo $data['appointment_id']; ?></td>
+                                <td><?php echo $data['doctorName'] . " " . $data['doctorLastName']; ?></td>
                                 <td><?php echo $data['app_date']; ?></td>
 
                                 <td>
@@ -128,7 +125,7 @@
                                     Done &nbsp;<a href="#" class="btn btn-success disabled" style="width:25px;height:25px;" tabindex="-1" role="button" aria-disabled="true"></a>
 
                                   <?php
-                                  $flag = 0;
+                                  $flag = 1;
                                   }
 
                                 ?>
@@ -137,17 +134,14 @@
 
                                 <td>
                                   <?php
-                                    if ( !$flag ) { ?>
+                                    if ( $flag ) { ?>
 
-                                      <a href="patient_details.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
+                                      <a href="diagnose.php?tc_number=<?=$data['doctorTC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View</a>
 
                                       <?php
                                     }else{
                                   ?>
-                                  <a href="diagnose.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Diagnose,</a>
-                                  <a href="prescribe_patient.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Prescribe,</a>
-                                  <a href="test_result.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">View Tests,</a>
-                                  <a href="request_test.php?tc_number=<?=$data['TC']?>&appointment=<?=$data['appointment_id']?>" class="link-primary">Request Test</a>
+                                  
                                 </td>
                               <?php } ?>
                               </tr>
@@ -194,10 +188,7 @@
         <div class="col-12 text-center mt-3">
           <a href="index.php" class="btn btn-danger p-2">Return</a>
         </div>
-
       </div>
-
-
     </div>
 
 
